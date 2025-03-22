@@ -5,4 +5,4 @@ triage.ai is an AI-native support platform built specifically for B2B companies,
 
 ![image](https://github.com/user-attachments/assets/1441bd6b-9a2e-4272-8ea3-0621c929f072)
 
-Visit the documentation [here]https://docs.triage-ai.com/ to learn more about installation and the features the platform offers!
+Visit the documentation [here](https://docs.triage-ai.com/) to learn more about installation and the features the platform offers!
