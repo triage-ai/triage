@@ -27,14 +27,14 @@ key.json
 
 # dependencies
 **/node_modules
-/.pnp
+**/.pnp
 .pnp.js
 
 # testing
-/coverage
+**/coverage
 
 # production build
-/build
+**/build
 **/_build
 
 # misc
