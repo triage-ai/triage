@@ -3612,7 +3612,7 @@ def delete_column(db: Session, column_id: int):
 
 def create_email(db: Session, email: schemas.EmailCreate):
     try:           
-        if email.imap_server:
+        if email.imap_active_status == 1:
             print('we are checking the imap server credentials')
             mail = imaplib.IMAP4_SSL(email.imap_server)
             mail.login(email.email, email.password)
@@ -3620,8 +3620,11 @@ def create_email(db: Session, email: schemas.EmailCreate):
             mail.select('inbox')
             _, data = mail.search(None, 'ALL')
             uids_list = [int(s) for s in data[0].split()]
-            uid_max = uids_list[-1]
-            email.uid_max = uid_max
+            inbox_uid_max = uids_list[-1]
+
+            _, data = mail.uid('SEARCH', None, search_string(inbox_uid_max))
+            uids_list = [int(s) for s in data[0].split()]
+            email.uid_max = max(inbox_uid_max, uids_list[-1])
     except:
         raise HTTPException(400, 'IMAP login credentials were not correct')
     
