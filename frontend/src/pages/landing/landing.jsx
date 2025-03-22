@@ -140,6 +140,7 @@ export const Landing = () => {
 						onClick={() => navigate('/user/login')}
 						sx={{
 							borderRadius: 50,
+							borderWidth: '1.5px',
 							textTransform: "none",
 							px: 3,
 							fontWeight: 600,
