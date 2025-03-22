@@ -1,0 +1,245 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ticket Guide &mdash; triage.ai 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Email Guide" href="Email%20Guide.html" />
+    <link rel="prev" title="User Guide" href="User%20Guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Getting%20Started/Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Getting%20Started/Post-Installation.html">Post-Install Setup Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Getting%20Started/Email%20Settings.html">Email Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Getting%20Started/Email%20Templates.html">Email Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Getting%20Started/IMAP%20Settings.html">IMAP Settings Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Getting%20Started/Email%20Piping.html">Email Piping</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Agent%20Guide.html">Agent Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="User%20Guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Ticket Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ticket-dashboard">Ticket Dashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ticket-modal">Ticket Modal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#guest-tickets">Guest Tickets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Email%20Guide.html">Email Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dashboard%20Guide.html">Dashboard Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Manage%20Pages.html">Manage Pages Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Plugins/Attachments%20with%20S3.html">Attachments with S3</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Projects</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/triage-ai/triage" rel="noreferrer" target="_blank">GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">triage.ai</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Ticket Guide</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/shivamrpatel/docs/blob/master/Guides/Ticket Guide.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ticket-guide">
+<h1>Ticket Guide<a class="headerlink" href="#ticket-guide" title="Link to this heading"></a></h1>
+<p>Tickets are the core component of triage.ai’s customer support system. They represent customer inquiries, requests, or issues that require resolution by support agents. Agents can create tickets on behalf of the user or by the users themselves. This guide will provide an overview of the various features available when working with tickets and instructions on how to use them.</p>
+<img alt="Photo of ticket list" src="../_images/ticket_list.PNG" />
+<section id="ticket-dashboard">
+<h2>Ticket Dashboard<a class="headerlink" href="#ticket-dashboard" title="Link to this heading"></a></h2>
+<p>The ticket dashboard is the first page you will see when you log in as an agent. This dashboard is the central hub for all ticket-related activities.
+The dashboard lists all the tickets within the system, with the ability to search, filter, and edit any available tickets. The dashboard gives an essential preview of each ticket,
+including the ticket number, title, priority, last update, and the user attached to the ticket.</p>
+<p><strong>Ticket Search/Filtering</strong></p>
+<p>Agents can search for tickets in the dashboard by ticket number and title, applying ticket queues, or using the advanced search feature. Ticket queues are additional categories that
+help filter tickets based on predefined criteria. Some of the ticket queues triage.ai provides by default are:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Open Tickets</p></li>
+<li><p>Closed Tickets</p></li>
+<li><p>Overdue Tickets</p></li>
+<li><p>Created Today</p></li>
+</ol>
+</div></blockquote>
+<p>…and several more. You can visit the <a class="reference internal" href="Manage%20Pages.html"><span class="doc">Manage Pages Guide</span></a> for more information on ticket queues and how to add custom ones.</p>
+<img alt="Photo of ticket queue" src="../_images/ticket_queue.PNG" />
+<p>triage.ai also provides an advanced search feature that lets you filter tickets on all fields available in the ticket. It includes a filter tab that enables you to select from what ticket fields you
+would like to search on, a sorting tab that will let you decide how you’d want to sort the numerical fields of the tickets, and a columns tab that enables you to customize the
+ticket dashboard to display the columns you would like to see in the ticket list. These filtering options go a long way to helping agents manage their tickets effectively.
+The images below list some examples of what the advanced search looks like in action.</p>
+<img alt="Photo of advanced ticket search" src="../_images/advanced_ticket_search.PNG" />
+<p><strong>Ticket Creation</strong></p>
+<p>To create a new ticket:</p>
+<ol class="arabic simple">
+<li><p>Navigate to the <strong>Ticket Dashboard</strong>.</p></li>
+<li><p>Click on the <strong>“Add Ticket”</strong> button.</p></li>
+<li><p>Fill in the required fields:</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>User</strong>: The customer associated with the ticket.</p></li>
+<li><p><strong>Topic</strong>: The category that best describes the target issue.</p></li>
+<li><p><strong>Title</strong>: A short, descriptive name for the issue.</p></li>
+<li><p><strong>Description</strong>: A detailed explanation of the issue.</p></li>
+<li><p><strong>Form Entries</strong>: Additional information required by the form linked to the topic.</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Fill in any extra optional fields that may be relevant to the ticket but are not required to create one. This will include</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Agent</strong>: The agent assigned to the ticket.</p></li>
+<li><p><strong>Department</strong>: The department to which the ticket will be assigned.</p></li>
+<li><p><strong>SLA</strong>: The grace period given to the ticket if no due date is assigned</p></li>
+<li><p><strong>Status</strong>: The current status of the ticket.</p></li>
+<li><p><strong>Priority</strong>: The importance of the ticket.</p></li>
+<li><p><strong>Due Date</strong>: The date the ticket is expected to be resolved.</p></li>
+</ul>
+<p>Not providing these fields will default them to the system default set in the ticket settings under the settings tab.</p>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Click <strong>“Create Ticket”</strong> to create the ticket. The appropriate emails regarding the ticket’s creation will be sent to agents and users. It will then appear in the ticket dashboard for tracking and management.</p></li>
+</ol>
+<img alt="Photo of advanced ticket creation" src="../_images/ticket_create.PNG" />
+<p><strong>Ticket Editing</strong></p>
+<p>To edit an existing ticket:</p>
+<ol class="arabic simple">
+<li><p>Locate the ticket in the <strong>Ticket Dashboard</strong> using search or filters.</p></li>
+<li><p>Click on the ticket to open it, then select the pencil icon/Click the pencil icon next to the ticket.</p></li>
+<li><p>Modify the necessary fields.</p></li>
+<li><p>Click <strong>“Save”</strong> to update the ticket.</p></li>
+</ol>
+<p>This will also send proper email updates to the users and agents involved in the ticket. Both processes above apply to the fully registered users, but they will not see all the internal fields shown for agents. Guests will have their own dashboard, which we will cover shortly.</p>
+<img alt="Photo of advanced ticket editing" src="../_images/ticket_edit.PNG" />
+</section>
+<section id="ticket-modal">
+<h2>Ticket Modal<a class="headerlink" href="#ticket-modal" title="Link to this heading"></a></h2>
+<p>The Ticket Modal provides a detailed view of a ticket, including essential ticket information and the associated conversation thread.
+This modal appears when selecting a ticket from the dashboard and offers a streamlined way to manage interactions and track progress.
+The modal offers two important tabs: the details tab and the thread tab. The details tab displays relevant ticket information to the agent and the user.
+The images below show the detail tab for the same ticket for both the agent and the user.</p>
+<img alt="Photo of ticket detail modal" src="../_images/ticket_detail.PNG" />
+<p>The thread tab offers a history of all interactions made with the ticket for both the agent and the user but also provides the ability to message between the two parties.
+This messaging includes a rich text editor that lets agents and users format their messages and the ability to attach files to the ticket if the S3 plugin is configured. If the user who created the ticket
+did it through email, the email address responsible for generating that ticket would be used to respond to the user’s email to turn the ticket thread’s messaging into
+an email thread for that user. The image below shows the thread with some messages between the agent and the user and interactions made with the ticket.</p>
+<img alt="Photo of ticket thread modal" src="../_images/ticket_thread.PNG" />
+</section>
+<section id="guest-tickets">
+<h2>Guest Tickets<a class="headerlink" href="#guest-tickets" title="Link to this heading"></a></h2>
+<p>Guests will go through a separate dashboard and creation process (if they are using the site and are not sending an email to a polling email address). For guests, the ticket
+The creation process will request the same information the registered users would provide, along with their name and email address, so they can register as guests if they haven’t already done so.</p>
+<img alt="Photo of guest ticket creation" src="../_images/guest_ticket_create.PNG" />
+<p>Guests should expect to receive an email with their ticket number and a link that will take them back to the site and allow them to view their ticket. Inputting their email and ticket number will let them view the guest ticket dashboard
+with that respective ticket.</p>
+<img alt="Photo of guest ticket searching" src="../_images/guest_ticket_search.PNG" />
+<p>The guest dashboard will display the same information as the user ticket dashboard, provide an option to edit their ticket and allow the ticket thread to
+communicate with the agent. This access will have a short expiry time (~15 minutes), in which refreshing the page after this time will require the guest to input their email and ticket number again to view the ticket.
+The image below shows the guest ticket dashboard with a ticket created by a guest and the thread tab open to show the messages between the agent and the guest.</p>
+<img alt="Photo of guest dashboard" src="../_images/guest_dashboard.PNG" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="User%20Guide.html" class="btn btn-neutral float-left" title="User Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Email%20Guide.html" class="btn btn-neutral float-right" title="Email Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, triage.ai.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+    /* Sidebar header (and topbar for mobile) */
+    .wy-side-nav-search, .wy-nav-top {
+      background: #050f04;
+    }
+    /* Sidebar */
+    .wy-nav-side {
+      /* background: #ff0000; */
+    }
+  </style>
+
+
+</body>
+</html>

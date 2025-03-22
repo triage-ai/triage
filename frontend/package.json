@@ -1,0 +1,82 @@
+{
+  "name": "triage-ai",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@mui/lab": "^6.0.0-beta.10",
+    "@mui/material": "^6.1.5",
+    "@mui/x-charts": "^7.21.0",
+    "@mui/x-data-grid": "^7.22.2",
+    "@mui/x-data-grid-generator": "^7.22.2",
+    "@mui/x-date-pickers": "^7.21.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@tiptap/core": "^2.9.1",
+    "@tiptap/extension-blockquote": "^2.10.3",
+    "@tiptap/extension-bold": "^2.10.3",
+    "@tiptap/extension-bullet-list": "^2.10.3",
+    "@tiptap/extension-code": "^2.10.3",
+    "@tiptap/extension-document": "^2.10.3",
+    "@tiptap/extension-image": "^2.9.1",
+    "@tiptap/extension-italic": "^2.10.3",
+    "@tiptap/extension-link": "^2.9.1",
+    "@tiptap/extension-list-item": "^2.10.3",
+    "@tiptap/extension-ordered-list": "^2.10.3",
+    "@tiptap/extension-paragraph": "^2.10.3",
+    "@tiptap/extension-strike": "^2.10.3",
+    "@tiptap/extension-table": "^2.9.1",
+    "@tiptap/extension-table-cell": "^2.10.3",
+    "@tiptap/extension-table-header": "^2.10.3",
+    "@tiptap/extension-table-row": "^2.10.3",
+    "@tiptap/extension-text": "^2.10.3",
+    "@tiptap/extension-underline": "^2.10.3",
+    "@tiptap/pm": "^2.9.1",
+    "@tiptap/starter-kit": "^2.9.1",
+    "axios": "^1.6.8",
+    "dayjs": "^1.11.13",
+    "javascript-time-ago": "^2.5.11",
+    "jstz": "^2.1.1",
+    "lucide-react": "^0.408.0",
+    "mui-tiptap": "^1.12.0",
+    "notistack": "^3.0.1",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-cookie": "^7.1.1",
+    "react-dom": "^18.2.0",
+    "react-fast-marquee": "^1.6.4",
+    "react-router-dom": "^6.22.3",
+    "react-scripts": "5.0.1",
+    "sweetalert2": "^11.17.2",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "build:env": "env-cmd -f ./.prod.env npm run-script build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "env-cmd": "^10.1.0"
+  }
+}

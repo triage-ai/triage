@@ -1,0 +1,174 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Guide &mdash; triage.ai 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Dashboard Guide" href="Dashboard%20Guide.html" />
+    <link rel="prev" title="Ticket Guide" href="Ticket%20Guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Getting%20Started/Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Getting%20Started/Post-Installation.html">Post-Install Setup Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Getting%20Started/Email%20Settings.html">Email Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Getting%20Started/Email%20Templates.html">Email Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Getting%20Started/IMAP%20Settings.html">IMAP Settings Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Getting%20Started/Email%20Piping.html">Email Piping</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Agent%20Guide.html">Agent Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="User%20Guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Ticket%20Guide.html">Ticket Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Email Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#email-settings">Email Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#email-banlist">Email Banlist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#diagnostic">Diagnostic</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Dashboard%20Guide.html">Dashboard Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Manage%20Pages.html">Manage Pages Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Plugins/Attachments%20with%20S3.html">Attachments with S3</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Projects</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/triage-ai/triage" rel="noreferrer" target="_blank">GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">triage.ai</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Email Guide</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/shivamrpatel/docs/blob/master/Guides/Email Guide.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="email-guide">
+<h1>Email Guide<a class="headerlink" href="#email-guide" title="Link to this heading"></a></h1>
+<p>For a guide on configuring emails in triage.ai and what everything means in the email create/edit page, refer to <a class="reference internal" href="../Getting%20Started/Email%20Settings.html"><span class="doc">Email Settings</span></a>. Also, head to
+<a class="reference internal" href="../Getting%20Started/Email%20Templates.html"><span class="doc">Email Templates</span></a> for more details on templates.</p>
+<img alt="Photo of email list" src="../_images/email_list.PNG" />
+<section id="email-settings">
+<h2>Email Settings<a class="headerlink" href="#email-settings" title="Link to this heading"></a></h2>
+<p>triage.ai allows you to specify which registered emails will handle system and alert emails. The system email is responsible for delivering emails on account-related concerns. This will
+cover situations like password resets, email confirmations, account creation, and complete user registration. The alert email is responsible for sending out ticket-related notifications. Based on the email templates
+created and active, email alerts will be sent out to the specified party on whatever ticket event has occurred. The admin email can also be configured here, but this does not affect the system and is more for
+reference purposes.</p>
+<img alt="Photo of email settings" src="../_images/email_settings.PNG" />
+</section>
+<section id="email-banlist">
+<h2>Email Banlist<a class="headerlink" href="#email-banlist" title="Link to this heading"></a></h2>
+<p>Along with offering IMAP services for incoming emails, triage.ai also offers a ban list for emails. This list of emails will not have their incoming emails turned into tickets. This is useful if your email expects more than potential support tickets, and you don’t want to clutter your ticket list with non-support emails. Emails can be added to the ban list by going to the ban list tab under emails and adding emails you’d like to ban for
+the specified configured email. It is also suggested that you add any no-reply emails from your email provider to avoid cluttering your ticket list with automated emails.</p>
+<img alt="Photo of email ban list" src="../_images/email_banlist.PNG" />
+</section>
+<section id="diagnostic">
+<h2>Diagnostic<a class="headerlink" href="#diagnostic" title="Link to this heading"></a></h2>
+<p>After configuring any email, you should go to the diagnostic tab and test that email to ensure the credentials and SMTP server are working correctly. This will send a test email from the configured email to another
+email of your choice so you can see that the SMTP server is working correctly and that an email was sent. The site will alert you if the credentials are incorrect and advise you to check the email
+to ensure everything is correct. While we can guarantee the email was sent from our end if the credentials are correct, we cannot guarantee the email was received on the other end, as that is out of our control.
+You will need to ensure the email receiving this email is valid and can receive emails.</p>
+<img alt="Photo of email diagnostic" src="../_images/email_diagnostic.PNG" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Ticket%20Guide.html" class="btn btn-neutral float-left" title="Ticket Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Dashboard%20Guide.html" class="btn btn-neutral float-right" title="Dashboard Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, triage.ai.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+    /* Sidebar header (and topbar for mobile) */
+    .wy-side-nav-search, .wy-nav-top {
+      background: #050f04;
+    }
+    /* Sidebar */
+    .wy-nav-side {
+      /* background: #ff0000; */
+    }
+  </style>
+
+
+</body>
+</html>

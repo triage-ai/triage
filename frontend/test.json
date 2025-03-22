@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Monday weekly repeating",
+        "repeats": "weekly",
+        "starts_on": "2020-01-01",
+        "starts_at": "09:00",
+        "ends_on": "2020-01-01",
+        "ends_at": "17:00",
+        "stops_on": null,
+        "day": 1,
+        "week": 0,
+        "month": 0
+    },
+    {
+        
+    }
+]
