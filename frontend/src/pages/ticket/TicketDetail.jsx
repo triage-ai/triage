@@ -327,7 +327,7 @@ export const TicketDetail = ({ ticket, closeDrawer, updateCurrentTicket, openEdi
 													wordBreak: 'break-word',
 												}}
 											>
-												{ticket.user.firstname + ' ' + ticket.user.lastname}
+												{ticket.user ? ticket.user.firstname + ' ' + ticket.user.lastname : 'Not assigned'}
 											</Typography>
 										</Box>
 									</Box>
