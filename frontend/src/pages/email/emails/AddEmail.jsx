@@ -104,6 +104,7 @@ export const AddEmail = ({ handleCreated, handleEdited, editEmail, setConfirmati
 					console.error(err)
 					setNotification(err.response?.data?.detail);
 					formData['imap_active_status'] = 'off'
+					formData['imap_server'] = ''
 				});
 		}
 	};
