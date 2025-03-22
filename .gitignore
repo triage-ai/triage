@@ -7,6 +7,9 @@
 # ignore db files
 *.db
 
+# ignore sh files
+*.sh
+
 # ignore ds_store files
 *.DS_Store
 
