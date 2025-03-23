@@ -918,6 +918,7 @@ def create_ticket(background_task: BackgroundTasks, db: Session, ticket: TicketC
 
         # Send email regarding new ticket
         user_email = db_user.email
+        agent_email = None
         if db_ticket.agent_id:
             agent = db.query(models.Agent).filter(
                 models.Agent.agent_id == db_ticket.agent_id).first()
