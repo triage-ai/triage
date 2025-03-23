@@ -2700,13 +2700,14 @@ def create_thread_entry(background_task: BackgroundTasks, db: Session, thread_en
                     print("Could not send email to user about agent response/reply")
         elif thread_entry.user_id:
             db_agent = get_agent_by_filter(db, {'agent_id': ticket.agent_id})
-            db_agent_email = db_agent.email
-            try:
-                background_task.add_task(func=send_email, db=db, email_list=[
-                                         db_agent_email], template='agent_new_message_alert', email_type='alert')
-            except:
-                traceback.print_exc()
-                print("Could not send email to agent about thread response/reply")
+            if db_agent:
+                db_agent_email = db_agent.email
+                try:
+                    background_task.add_task(func=send_email, db=db, email_list=[
+                                            db_agent_email], template='agent_new_message_alert', email_type='alert')
+                except:
+                    traceback.print_exc()
+                    print("Could not send email to agent about thread response/reply")
 
         else:
             raise Exception('No editor specified!')
