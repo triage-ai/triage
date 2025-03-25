@@ -76,6 +76,7 @@ export const AddEmail = ({ handleCreated, handleEdited, editEmail, setConfirmati
 
 	const handleAction = () => {
 		formData['imap_active_status'] = formData.imap_active_status === 'on' ? 1 : 0
+		formData['imap_server'] = formData.imap_active_status === 1 ? formData.imap_server : ''
 		if (editEmail) {
 			let updates = { ...editEmail };
 			if (!emailChange) {
@@ -95,7 +96,6 @@ export const AddEmail = ({ handleCreated, handleEdited, editEmail, setConfirmati
 					formData['imap_active_status'] = 'off'
 				})
 		} else {
-			formData['imap_server'] = formData.imap_active_status === 'on' ? formData['imap_server'] : ''
 			createEmail(formData)
 				.then((res) => {
 					handleCreated();
