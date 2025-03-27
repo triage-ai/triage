@@ -352,10 +352,10 @@ def authenticate_user(db: Session, email: str, password: str):
     return user
 
 
-def authenticate_guest(db: Session, email: str, ticket_number: int):
+def authenticate_guest(db: Session, email: str, ticket_number: str):
     guest = get_user_by_filter(db, filter={'email': email})
     ticket = get_ticket_by_filter(db, filter={'number': ticket_number})
-    if not guest or not ticket or not guest.status == 2 or not ticket.user_id == guest.user_id:
+    if not guest or not ticket or guest.status not in (1,2) or not ticket.user_id == guest.user_id:
         return False
     return guest
 
