@@ -165,7 +165,7 @@ class GuestToken(BaseModel):
     token: str
     email: str
     user_id: int
-    ticket_number: int
+    ticket_number: str
 
 # Decoded Token Data Schema
 
@@ -181,7 +181,7 @@ class UserData(BaseModel):
 class GuestData(BaseModel):
     user_id: int
     email: str
-    ticket_number: int
+    ticket_number: str
 
 # Department Schema
 
