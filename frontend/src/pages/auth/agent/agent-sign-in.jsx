@@ -101,8 +101,9 @@ export const AgentSignIn = () => {
 				.catch((error) => {
 					const errorCode = error.code;
 					const errorMessage = error.message;
-					console.error(errorCode, errorMessage);
-					setNotification(error.response?.data?.detail);
+					if (error.status !== 422) {
+						setNotification(error.response?.data?.detail);
+					}
 					setLoading(false);
 				});
 		} else if (!validateEmail(email)) {
