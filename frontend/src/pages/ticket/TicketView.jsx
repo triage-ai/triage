@@ -1,6 +1,6 @@
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Stack, styled, Typography } from "@mui/material"
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Stack, styled, Typography } from "@mui/material"
 import { File, Paperclip, Send, TicketX, X } from "lucide-react"
-import { useContext, useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useMemo, useRef, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Layout } from "../../components/layout"
 import { WhiteContainer } from "../../components/white-container"
@@ -50,7 +50,7 @@ export const TicketView = () => {
     const { createThreadEntry, createThreadEntryForUser } = useThreadsBackend();
     const { getPresignedURL } = useAttachmentBackend();
     const { agentAuthState, userAuthState, permissions } = useContext(AuthContext);
-    const type = 'agent'
+    const type = useMemo(() => (agentAuthState ? 'agent' : userAuthState ? 'user' : 'guest'), [agentAuthState,  userAuthState])
     const editor = useEditor({
         extensions: extensions,
         content: '',
@@ -61,6 +61,7 @@ export const TicketView = () => {
             }));
         },
     });
+
 
     const triggerFileInput = () => {
         if (fileInputRef.current) {
@@ -317,7 +318,7 @@ export const TicketView = () => {
             p => ({
                 ...p,
                 [name]: value
-            })
+                })
         )
     }
 
@@ -347,263 +348,444 @@ export const TicketView = () => {
                 </Box>
                 }
                 {ticket ?
-
-                    <Box
+                    <Box 
                         sx={{
-                            display: 'flex'
+                            display: 'flex',
+                            justifyContent: 'space-between', // Spaces out ticket info and the "Hi" text
+                            alignItems: 'start', // Align items to the top
+                            width: '100%'
                         }}
                     >
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                width: '100%'
+                            }}
+                        >
 
-                        <Box sx={{ height: '100%', width: '100%', justifyContent: 'space-between', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+                            <Box sx={{ height: '100%', width: '100%', justifyContent: 'space-between', display: 'flex', flexDirection: 'column', position: 'relative' }}>
 
-                            <Box sx={{ height: '100%', px: '28px', position: 'relative', overflowY: 'auto' }}>
-                                <Timeline
-                                    sx={{
-                                        px: 0,
-                                        position: 'relative',
-                                        [`& .${timelineItemClasses.root}:before`]: {
-                                            flex: 0,
-                                            padding: 0,
-                                        },
-                                    }}
-                                >
-                                    {ticket.thread.events_and_entries.map((item) =>
-                                        item.entry_id ? (
-                                            <TimelineItem key={'entry' + item.entry_id} sx={{ marginBottom: '24px' }}>
-                                                <TimelineSeparator>
-                                                    <TimelineDot sx={{ background: '#2FC76E', boxShadow: 'none', zIndex: 1 }} />
-                                                    <TimelineConnector sx={{ background: '#ecffef' }} />
-                                                </TimelineSeparator>
-                                                <TimelineContent paddingTop={0}>
-                                                    <Box>
-                                                        <Typography variant='subtitle2' fontWeight={600} color='#1B1D1F' align={getDirection(item.agent_id, 'right', 'left')}>
-                                                            {item.subject}
-                                                        </Typography>
-                                                        <Box
-                                                            sx={{
-                                                                marginLeft: getDirection(item.agent_id, 'auto', 0),
-                                                                width: 'fit-content',
-                                                                '& .MuiPaper-rounded': {
-                                                                    borderRadius: '8px',
-                                                                },
-                                                                '& .MuiAccordionSummary-root': {
-                                                                    px: '12px',
-                                                                    minHeight: 0,
-                                                                    borderRadius: '8px',
-                                                                },
-                                                                '& .MuiAccordionSummary-content': {
-                                                                    my: '12px',
-                                                                },
-                                                                '& .ProseMirror p': {
-                                                                    fontSize: 'small',
-                                                                    fontWeight: 500,
-                                                                    wordBreak: 'break-word'
-                                                                },
-                                                            }}
-                                                        >
-                                                            {item.attachments.length === 0 ? (
-                                                                <Box
-                                                                    sx={{
-                                                                        padding: '12px',
-                                                                        border: '1px solid #E5EFE9',
-                                                                        borderRadius: '8px',
-                                                                    }}
-                                                                >
-                                                                    <RichTextReadOnly content={item.body} extensions={extensions} />
-                                                                </Box>
-                                                            ) : (
-                                                                <Accordion
-                                                                    disableGutters={true}
-                                                                    elevation={0}
-                                                                    sx={{
-                                                                        border: '1px solid #E5EFE9',
-                                                                    }}
-                                                                >
-                                                                    <AccordionSummary>
-                                                                        <Box
-                                                                            sx={{
-                                                                                display: 'flex',
-                                                                                flexDirection: 'row',
-                                                                                justifyContent: 'space-between',
-                                                                                alignItems: 'start',
-                                                                                width: '100%',
-                                                                            }}
-                                                                        >
-                                                                            <RichTextReadOnly content={item.body} extensions={extensions} />
-                                                                            <Stack direction='row' ml={0.5} spacing={0.5} alignItems='center' color={'grey'}>
-                                                                                <Typography fontSize='small'>{item.attachments.length}</Typography>
-                                                                                <Paperclip size={15} />
-                                                                            </Stack>
-                                                                        </Box>
-                                                                    </AccordionSummary>
-                                                                    <AccordionDetails>
-                                                                        <Box
-                                                                            sx={{
-                                                                                display: 'flex',
-                                                                                flexDirection: 'column',
-                                                                                gap: 1,
-                                                                            }}
-                                                                        >
-                                                                            {item.attachments.map((attachment, idx) => (
-                                                                                <FileCard file={attachment} key={idx} />
-                                                                            ))}
-                                                                        </Box>
-                                                                    </AccordionDetails>
-                                                                </Accordion>
-                                                            )}
-                                                        </Box>
-                                                        <Box textAlign={getDirection(item.agent_id, 'right', 'left')}>
-                                                            <Typography variant='caption' fontWeight={500}>
-                                                                <span className='text-muted'>By</span> {item.owner}
-                                                                <span className='text-muted'> at {dayjs.utc(item.created).local().format('lll')}</span>
-                                                            </Typography>
-                                                        </Box>
-                                                    </Box>
-                                                </TimelineContent>
-                                            </TimelineItem>
-                                        ) : (
-                                            <TimelineItem key={'event' + item.event_id} sx={{ marginBottom: '24px' }}>
-                                                <TimelineSeparator>
-                                                    <TimelineDot sx={{ background: '#2FC76E', borderRadius: '3px', boxShadow: 'none', zIndex: 1 }}></TimelineDot>
-                                                </TimelineSeparator>
-                                                <TimelineContent paddingTop={0}>
-                                                    <Box>
-                                                        <Box width={'fit-content'} sx={{ marginLeft: item.agent_id ? 'auto' : 0 }}>
-                                                            {getEventText(item)}
-                                                        </Box>
-                                                        <Box width={'fit-content'} sx={{ marginLeft: item.agent_id ? 'auto' : 0 }}>
-                                                            <Typography variant='caption' fontWeight={500}>
-                                                                <span className='text-muted'>By</span> {item.owner}&nbsp;
-                                                                <span className='text-muted'>at {dayjs.utc(item.created).local().format('lll')}</span>
-                                                            </Typography>
-                                                        </Box>
-                                                    </Box>
-                                                </TimelineContent>
-                                            </TimelineItem>
-                                        )
-                                    )}
-
-                                    <Box
+                                <Box sx={{ height: '100%', px: '28px', position: 'relative', overflowY: 'auto' }}>
+                                    <Timeline
                                         sx={{
-                                            position: 'absolute',
-                                            top: '24px',
-                                            left: '5px',
-                                            width: '2px',
-                                            height: '100%',
-                                            background: '#ecffef',
-                                            zIndex: 0,
-                                        }}
-                                    />
-                                </Timeline>
-                            </Box>
-
-                            {(type === 'user' || permissions.hasOwnProperty('ticket.edit')) && (
-                                <Box sx={{ px: '28px', py: '20px' }}>
-                                    <RichTextEditorBox
-                                        editor={editor}
-                                        footer={
-                                            <Stack>
-                                                {files.length !== 0 && (
-                                                    <Box sx={{ borderTop: '1.5px solid #E5EFE9', maxHeight: '200px', overflowY: 'auto' }}>
-                                                        <List dense>
-                                                            {files.map((file, idx) => (
-                                                                <ListItem
-                                                                    sx={{
-                                                                        height: '40px',
-                                                                    }}
-                                                                    key={idx}
-                                                                    secondaryAction={
-                                                                        <IconButton edge='end' aria-label='delete' onClick={() => handleDeleteFile(idx)}>
-                                                                            <X size={17}/>
-                                                                        </IconButton>
-                                                                    }
-                                                                >
-                                                                    <ListItemAvatar>
-                                                                        <Avatar
-                                                                            sx={{
-                                                                                height: '30px',
-                                                                                width: '30px'
-                                                                            }}
-                                                                        >
-                                                                            <File size={15} />
-                                                                        </Avatar>
-                                                                    </ListItemAvatar>
-                                                                    <ListItemText
-                                                                        primaryTypographyProps={{
-                                                                            fontSize: '0.8rem',
-                                                                            fontWeight: 600,
-                                                                            color: 'grey'
-                                                                        }}
-                                                                        secondaryTypographyProps={{
-                                                                            fontSize: '0.7rem',
-                                                                            color: 'grey'
-                                                                        }}
-                                                                        primary={file.name} secondary={humanFileSize(file.size, true, 1)}
-                                                                    />
-                                                                </ListItem>
-                                                            ))}
-                                                        </List>
-                                                    </Box>
-                                                )}
-
-                                            </Stack>
-                                        }
-                                    />
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            mt: 1,
+                                            px: 0,
+                                            position: 'relative',
+                                            [`& .${timelineItemClasses.root}:before`]: {
+                                                flex: 0,
+                                                padding: 0,
+                                            },
                                         }}
                                     >
-                                        <Button
-                                            disableElevation
-                                            disableRipple
-                                            onClick={triggerFileInput}
-                                            startIcon={<Paperclip size={15} />}
-                                            sx={{
-                                                textTransform: 'none',
-                                                fontWeight: 600,
-                                                height: '25px',
-                                                fontSize: '0.75rem'
-                                            }}
-                                        >
-                                            Drop or click to add files
-                                        </Button>
-                                        <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileUpload} multiple />
-                                        <Button
-                                            variant='contained'
-                                            disableElevation
-                                            disableRipple
-                                            size='small'
-                                            onClick={handleSubmit}
-                                            disabled={postDisabled}
-                                            sx={{
-                                                color: 'white',
-                                                backgroundColor: 'primary.main',
-                                                borderRadius: '8px',
-                                                textTransform: 'none',
-                                                fontWeight: 600,
-                                                '&:hover': {
-                                                    backgroundColor: '#29b866',
-                                                },
-                                            }}
-                                        >
-                                            Send
-                                        </Button>
-                                    </Box>
+                                        {ticket.thread.events_and_entries.map((item) =>
+                                            item.entry_id ? (
+                                                <TimelineItem key={'entry' + item.entry_id} sx={{ marginBottom: '24px' }}>
+                                                    <TimelineSeparator>
+                                                        <TimelineDot sx={{ background: '#2FC76E', boxShadow: 'none', zIndex: 1 }} />
+                                                        <TimelineConnector sx={{ background: '#ecffef' }} />
+                                                    </TimelineSeparator>
+                                                    <TimelineContent paddingTop={0}>
+                                                        <Box>
+                                                            <Typography variant='subtitle2' fontWeight={600} color='#1B1D1F' align={getDirection(item.agent_id, 'right', 'left')}>
+                                                                {item.subject}
+                                                            </Typography>
+                                                            <Box
+                                                                sx={{
+                                                                    marginLeft: getDirection(item.agent_id, 'auto', 0),
+                                                                    width: 'fit-content',
+                                                                    '& .MuiPaper-rounded': {
+                                                                        borderRadius: '8px',
+                                                                    },
+                                                                    '& .MuiAccordionSummary-root': {
+                                                                        px: '12px',
+                                                                        minHeight: 0,
+                                                                        borderRadius: '8px',
+                                                                    },
+                                                                    '& .MuiAccordionSummary-content': {
+                                                                        my: '12px',
+                                                                    },
+                                                                    '& .ProseMirror p': {
+                                                                        fontSize: 'small',
+                                                                        fontWeight: 500,
+                                                                        wordBreak: 'break-word'
+                                                                    },
+                                                                }}
+                                                            >
+                                                                {item.attachments.length === 0 ? (
+                                                                    <Box
+                                                                        sx={{
+                                                                            padding: '12px',
+                                                                            border: '1px solid #E5EFE9',
+                                                                            borderRadius: '8px',
+                                                                        }}
+                                                                    >
+                                                                        <RichTextReadOnly content={item.body} extensions={extensions} />
+                                                                    </Box>
+                                                                ) : (
+                                                                    <Accordion
+                                                                        disableGutters={true}
+                                                                        elevation={0}
+                                                                        sx={{
+                                                                            border: '1px solid #E5EFE9',
+                                                                        }}
+                                                                    >
+                                                                        <AccordionSummary>
+                                                                            <Box
+                                                                                sx={{
+                                                                                    display: 'flex',
+                                                                                    flexDirection: 'row',
+                                                                                    justifyContent: 'space-between',
+                                                                                    alignItems: 'start',
+                                                                                    width: '100%',
+                                                                                }}
+                                                                            >
+                                                                                <RichTextReadOnly content={item.body} extensions={extensions} />
+                                                                                <Stack direction='row' ml={0.5} spacing={0.5} alignItems='center' color={'grey'}>
+                                                                                    <Typography fontSize='small'>{item.attachments.length}</Typography>
+                                                                                    <Paperclip size={15} />
+                                                                                </Stack>
+                                                                            </Box>
+                                                                        </AccordionSummary>
+                                                                        <AccordionDetails>
+                                                                            <Box
+                                                                                sx={{
+                                                                                    display: 'flex',
+                                                                                    flexDirection: 'column',
+                                                                                    gap: 1,
+                                                                                }}
+                                                                            >
+                                                                                {item.attachments.map((attachment, idx) => (
+                                                                                    <FileCard file={attachment} key={idx} />
+                                                                                ))}
+                                                                            </Box>
+                                                                        </AccordionDetails>
+                                                                    </Accordion>
+                                                                )}
+                                                            </Box>
+                                                            <Box textAlign={getDirection(item.agent_id, 'right', 'left')}>
+                                                                <Typography variant='caption' fontWeight={500}>
+                                                                    <span className='text-muted'>By</span> {item.owner}
+                                                                    <span className='text-muted'> at {dayjs.utc(item.created).local().format('lll')}</span>
+                                                                </Typography>
+                                                            </Box>
+                                                        </Box>
+                                                    </TimelineContent>
+                                                </TimelineItem>
+                                            ) : (
+                                                <TimelineItem key={'event' + item.event_id} sx={{ marginBottom: '24px' }}>
+                                                    <TimelineSeparator>
+                                                        <TimelineDot sx={{ background: '#2FC76E', borderRadius: '3px', boxShadow: 'none', zIndex: 1 }}></TimelineDot>
+                                                    </TimelineSeparator>
+                                                    <TimelineContent paddingTop={0}>
+                                                        <Box>
+                                                            <Box width={'fit-content'} sx={{ marginLeft: item.agent_id ? 'auto' : 0 }}>
+                                                                {getEventText(item)}
+                                                            </Box>
+                                                            <Box width={'fit-content'} sx={{ marginLeft: item.agent_id ? 'auto' : 0 }}>
+                                                                <Typography variant='caption' fontWeight={500}>
+                                                                    <span className='text-muted'>By</span> {item.owner}&nbsp;
+                                                                    <span className='text-muted'>at {dayjs.utc(item.created).local().format('lll')}</span>
+                                                                </Typography>
+                                                            </Box>
+                                                        </Box>
+                                                    </TimelineContent>
+                                                </TimelineItem>
+                                            )
+                                        )}
 
-                                    {/* <Box mt={2} width={'100%'} textAlign={'center'}>
-                                                <CircularButton sx={{ py: 2, px: 6, width: 200 }} onClick={handleSubmit} disabled={postDisabled}>
-                                                    Post
-                                                </CircularButton>
-                                            </Box> */}
+                                        <Box
+                                            sx={{
+                                                position: 'absolute',
+                                                top: '24px',
+                                                left: '5px',
+                                                width: '2px',
+                                                height: '100%',
+                                                background: '#ecffef',
+                                                zIndex: 0,
+                                            }}
+                                        />
+                                    </Timeline>
                                 </Box>
-                            )}
+
+                                {(type === 'user' || permissions.hasOwnProperty('ticket.edit')) && (
+                                    <Box sx={{ px: '28px', py: '20px' }}>
+                                        <RichTextEditorBox
+                                            editor={editor}
+                                            footer={
+                                                <Stack>
+                                                    {files.length !== 0 && (
+                                                        <Box sx={{ borderTop: '1.5px solid #E5EFE9', maxHeight: '200px', overflowY: 'auto' }}>
+                                                            <List dense>
+                                                                {files.map((file, idx) => (
+                                                                    <ListItem
+                                                                        sx={{
+                                                                            height: '40px',
+                                                                        }}
+                                                                        key={idx}
+                                                                        secondaryAction={
+                                                                            <IconButton edge='end' aria-label='delete' onClick={() => handleDeleteFile(idx)}>
+                                                                                <X size={17}/>
+                                                                            </IconButton>
+                                                                        }
+                                                                    >
+                                                                        <ListItemAvatar>
+                                                                            <Avatar
+                                                                                sx={{
+                                                                                    height: '30px',
+                                                                                    width: '30px'
+                                                                                }}
+                                                                            >
+                                                                                <File size={15} />
+                                                                            </Avatar>
+                                                                        </ListItemAvatar>
+                                                                        <ListItemText
+                                                                            primaryTypographyProps={{
+                                                                                fontSize: '0.8rem',
+                                                                                fontWeight: 600,
+                                                                                color: 'grey'
+                                                                            }}
+                                                                            secondaryTypographyProps={{
+                                                                                fontSize: '0.7rem',
+                                                                                color: 'grey'
+                                                                            }}
+                                                                            primary={file.name} secondary={humanFileSize(file.size, true, 1)}
+                                                                        />
+                                                                    </ListItem>
+                                                                ))}
+                                                            </List>
+                                                        </Box>
+                                                    )}
+
+                                                </Stack>
+                                            }
+                                        />
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                mt: 1,
+                                            }}
+                                        >
+                                            <Button
+                                                disableElevation
+                                                disableRipple
+                                                onClick={triggerFileInput}
+                                                startIcon={<Paperclip size={15} />}
+                                                sx={{
+                                                    textTransform: 'none',
+                                                    fontWeight: 600,
+                                                    height: '25px',
+                                                    fontSize: '0.75rem'
+                                                }}
+                                            >
+                                                Drop or click to add files
+                                            </Button>
+                                            <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileUpload} multiple />
+                                            <Button
+                                                variant='contained'
+                                                disableElevation
+                                                disableRipple
+                                                size='small'
+                                                onClick={handleSubmit}
+                                                disabled={postDisabled}
+                                                sx={{
+                                                    color: 'white',
+                                                    backgroundColor: 'primary.main',
+                                                    borderRadius: '8px',
+                                                    textTransform: 'none',
+                                                    fontWeight: 600,
+                                                    '&:hover': {
+                                                        backgroundColor: '#29b866',
+                                                    },
+                                                }}
+                                            >
+                                                Send
+                                            </Button>
+                                        </Box>
+
+                                        {/* <Box mt={2} width={'100%'} textAlign={'center'}>
+                                                    <CircularButton sx={{ py: 2, px: 6, width: 200 }} onClick={handleSubmit} disabled={postDisabled}>
+                                                        Post
+                                                    </CircularButton>
+                                                </Box> */}
+                                    </Box>
+                                )}
+                            </Box>
+
+
+
                         </Box>
 
+                        <Box
+                            sx={{
+                                width: 400,
+                                // background: "#f6f8fa",
+                                padding: 2,
+                                borderRadius: "8px",
+                                // border: "1px solid #e1e4e8",
+                                marginLeft: 16,
+                                marginRight: 8
+                            }}
+                        >
+                            {/* Ticket Details */}
+                            <Typography variant="h6" fontWeight="bold">Agent</Typography>
+                            {ticket.agent ? (
+                                <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1 }}>
+                                    <Avatar>{ticket.agent.firstname?.charAt(0)}</Avatar>
+                                    <Typography
+                                        variant='subtitle2'
+                                        color={'#1B1D1F'}
+                                        fontWeight={600}
+                                        sx={{
+                                            flexWrap: 'wrap',
+                                            wordBreak: 'break-word',
+                                            }}
+                                    >
+                                        {ticket.agent.firstname + ' ' + ticket.agent.lastname}
+                                    </Typography>
+                                </Stack>
+                            ) : (
+                                <Typography
+                                    variant='subtitle2'
+                                    color={'#1B1D1F'}
+                                    fontWeight={600}
+                                >
+                                    Not assigned
+                                </Typography>
+                            )}
+                            <Divider sx={{ my: 2 }} />
+
+                            <Typography variant="h6" fontWeight="bold">User</Typography>
+                            {ticket.user ? (
+                                <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1 }}>
+                                    <Avatar>{ticket.user.firstname?.charAt(0)}</Avatar>
+                                    <Typography
+                                        variant='subtitle2'
+                                        color={'#1B1D1F'}
+                                        fontWeight={600}
+                                        sx={{
+                                            flexWrap: 'wrap',
+                                            wordBreak: 'break-word',
+                                        }}
+                                    >
+                                        {ticket.user.firstname + ' ' + ticket.user.lastname}
+                                    </Typography>
+                                </Stack>
+                            ) : (
+                                <Typography
+                                    variant='subtitle2'
+                                    color={'#1B1D1F'}
+                                    fontWeight={600}
+                                >
+                                    Not assigned
+                                </Typography>
+                            )}
+                            <Divider sx={{ my: 2 }} />
+
+                            {/* Priority */}
+                            <Typography variant="h6" fontWeight="bold">Priority</Typography>
+                            <Chip
+							    label={ticket.priority.priority_desc}
+								sx={{ backgroundColor: ticket.priority.priority_color, px: '8px' }}
+                            />
+                            <Divider sx={{ my: 2 }} />
+
+                            {/* Topic */}
+                            <Typography variant="h6" fontWeight="bold">Topic</Typography>
+                            <Typography
+                                variant='subtitle2'
+                                color={'#1B1D1F'}
+                                fontWeight={600}
+                                sx={{
+                                    flexWrap: 'wrap',
+                                    wordBreak: 'break-word',
+                                }}
+                            >
+                                {ticket.topic.topic}
+                            </Typography>
+                            <Divider sx={{ my: 2 }} />
+
+                            {/* Department */}
+                            <Typography variant="h6" fontWeight="bold">Department</Typography>
+                            <Typography
+                                variant='subtitle2'
+                                color={'#1B1D1F'}
+                                fontWeight={600}
+                                sx={{
+                                    flexWrap: 'wrap',
+                                    wordBreak: 'break-word',
+                                }}
+                            >
+                                {ticket.dept.name}
+                            </Typography>
+                            <Divider sx={{ my: 2 }} />
+
+                            {/* Due Dates */}
+                            <Typography variant="h6" fontWeight="bold">Due Date</Typography>
+                            <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1 }}>
+                                <Typography variant='subtitle2' color={'#1B1D1F'} fontWeight={600}>
+                                    {ticket.due_date
+                                        ? new Date(ticket.due_date)
+                                            .toLocaleDateString('en-US', {
+                                                day: '2-digit',
+                                                month: 'short',
+                                                year: 'numeric',
+                                            })
+                                            .replace(',', ' ')
+                                        : new Date(ticket.est_due_date)
+                                            .toLocaleDateString('en-US', {
+                                                day: '2-digit',
+                                                month: 'short',
+                                                year: 'numeric',
+                                            })
+                                            .replace(',', ' ')
+                                    }
+                                </Typography>
+                                {ticket.overdue === 1 && ( 
+                                    <Chip
+                                        label='Overdue'
+                                        sx={{ backgroundColor: '#f77c7c', marginLeft: '8px'}}
+                                    />
+                                )}
+                            </Stack>
+                            <Divider sx={{ my: 2 }} />
+
+                            {/* SLA */}
+                            <Typography variant="h6" fontWeight="bold">SLA</Typography>
+                            <Typography
+                                variant='subtitle2'
+                                color={'#1B1D1F'}
+                                fontWeight={600}
+                                sx={{
+                                    flexWrap: 'wrap',
+                                    wordBreak: 'break-word',
+                                }}
+                            >
+                                {ticket.sla.name}
+                            </Typography>
+
+                            {ticket.form_entry.form.fields && (
+                                <>
+                                    <Divider sx={{ my: 2 }} />
+                                    <Typography variant="h6" fontWeight="bold">Form Fields</Typography>
+                                </>
+                            )}
+
+                            {ticket?.form_entry?.form?.fields?.map((field, idx) => (
+                                <>
+                                    <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} key={field.label} sx={{ pb: 2 }}>
+                                        <Typography variant='overline' className='text-muted' sx={{ opacity: 0.7 }}>
+                                            {field.label}
+                                        </Typography>
+                                        <Typography variant='subtitle1' color={'#1B1D1F'} fontWeight={600}>
+                                            {ticket?.form_entry?.values[idx]?.value ?? ''}
+                                        </Typography>
+                                    </Box>
+                                </>
+                            ))}
 
 
+                        </Box>
                     </Box>
                     :
                     <Box
@@ -632,7 +814,9 @@ export const TicketView = () => {
 
             </WhiteContainer>
 
+
         </Layout>
+
     )
 
 
