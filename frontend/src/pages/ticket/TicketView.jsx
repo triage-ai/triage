@@ -1,12 +1,12 @@
-import { Accordion, AccordionSummary, Avatar, Box, IconButton, List, ListItem, ListItemText, Skeleton, Typography } from "@mui/material"
-import { CloudUploadIcon, File, Paperclip, TicketX, X } from "lucide-react"
+import { Accordion, AccordionSummary, Avatar, Box, IconButton, List, ListItem, ListItemText, Skeleton, Typography, Stack, Link, ListItemAvatar, AccordionDetails } from "@mui/material"
+import { CloudUploadIcon, File, Paperclip, TicketX, X, Send } from "lucide-react"
 import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Layout } from "../../components/layout"
 import { WhiteContainer } from "../../components/white-container"
 import { useData } from "../../context/DataContext"
 
-import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineSeparator } from "@mui/lab"
+import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineSeparator, timelineItemClasses } from "@mui/lab"
 import { extensions, RichTextEditorBox } from '../../components/rich-text-editor'
 import { useTicketBackend } from "../../hooks/useTicketBackend"
 
@@ -20,6 +20,11 @@ import { useThreadsBackend } from "../../hooks/useThreadBackend"
 import { AuthContext } from "../../context/AuthContext"
 import { useAttachmentBackend } from "../../hooks/useAttachmentBackend"
 import { useEditor } from "@tiptap/react"
+import { CustomInput } from "../../components/custom-select"
+import formatDate from '../../functions/date-formatter';
+import axios from "axios"
+
+
 
 export const TicketView = () => {
     const { number } = useParams()
@@ -30,227 +35,259 @@ export const TicketView = () => {
 
 
     const [formData, setFormData] = useState({ subject: null, body: '', type: 'A', editor: '', recipients: '' });
-        const [postDisabled, setPostDisabled] = useState(true);
-        const [files, setFiles] = useState([]);
-        const { defaultSettings } = useData()
-        const { createThreadEntry, createThreadEntryForUser } = useThreadsBackend();
-        const { getPresignedURL } = useAttachmentBackend();
-        const { agentAuthState, userAuthState, permissions } = useContext(AuthContext);
-        const editor = useEditor({
-            extensions: extensions,
-            content: '',
-            onUpdate({ editor }) {
-                setFormData((prevFormData) => ({
-                    ...prevFormData,
-                    body: editor.getHTML(),
-                }));
-            },
-        });
+    const [postDisabled, setPostDisabled] = useState(true);
+    const [files, setFiles] = useState([]);
+    const { defaultSettings } = useData()
+    const { createThreadEntry, createThreadEntryForUser } = useThreadsBackend();
+    const { getPresignedURL } = useAttachmentBackend();
+    const { agentAuthState, userAuthState, permissions } = useContext(AuthContext);
+    const type = 'agent'
+    const editor = useEditor({
+        extensions: extensions,
+        content: '',
+        onUpdate({ editor }) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                body: editor.getHTML(),
+            }));
+        },
+    });
     
-        const getDirection = (agent_id, option1, option2) => {
-            if ((agent_id && type === 'agent') || (!agent_id && type !== 'agent')) {
-                return option1;
-            } else return option2;
-        };
-    
-        const handleSubmit = async () => {
-            // ABSTRACT SO THAT I CAN USE IT FOR EITHER TYPE OF THREAD ENTRY
-            const threadEntryCreate = type === 'agent' ? createThreadEntry : createThreadEntryForUser;
-            let newThreadEntry = { ...formData, thread_id: ticket.thread.thread_id };
-            if (type === 'agent') {
-                newThreadEntry.agent_id = agentAuthState.agent_id;
-            } else {
-                newThreadEntry.user_id = userAuthState.user_id;
-            }
-    
-            let updatedTicket = { ...ticket };
-            if (files.length !== 0) {
-                const file_names = files.map((item) => item.name);
-                
-                getPresignedURL({ attachment_names: file_names })
-                .then((res) => {
-                    if (res.status !== 200) {
-                        alert('Error with S3 configuration. Attachment will not be added to thread');
-                        return {};
-                    } else {
-                        let presigned_urls = { ...res.data.url_dict };
-                        return presigned_urls;
-                    }
-                })
-                .then(async (presigned_urls) => {
-                    if (Object.keys(presigned_urls).length === 0) {
-                        return [];
-                    } else {
-                        let attachments = await awsFileUpload(presigned_urls, files);
-                        return attachments;
-                    }
-                })
-                .then(async (attachments) => {
-                    newThreadEntry = attachments.length !== 0 ? { ...newThreadEntry, attachments: attachments } : newThreadEntry;
-                    await threadEntryCreate(newThreadEntry)
-                    .then((response) => {
-                        updatedTicket.thread.entries.push(response.data);
-                        editor.commands.setContent('');
-                        setFormData({ subject: null, body: '', type: 'A', editor: '', recipients: '' });
-                        setFiles([]);
-                    })
-                })
-                .then(() => {
-                    updateCurrentTicket(updatedTicket);
-                })
-                .catch((err) => {
-                    alert(err.response.data.detail)
-                })
-            } else {
-                threadEntryCreate(newThreadEntry)
+    const getDirection = (agent_id, option1, option2) => {
+        if ((agent_id && type === 'agent') || (!agent_id && type !== 'agent')) {
+            return option1;
+        } else return option2;
+    };
+
+    const updateCurrentTicket = newTicket => {
+        newTicket = preProcessTicket(newTicket);
+        setTicket(newTicket);
+    };
+
+    const handleSubmit = async () => {
+        // ABSTRACT SO THAT I CAN USE IT FOR EITHER TYPE OF THREAD ENTRY
+        const threadEntryCreate = type === 'agent' ? createThreadEntry : createThreadEntryForUser;
+        let newThreadEntry = { ...formData, thread_id: ticket.thread.thread_id };
+        if (type === 'agent') {
+            newThreadEntry.agent_id = agentAuthState.agent_id;
+        } else {
+            newThreadEntry.user_id = userAuthState.user_id;
+        }
+
+        let updatedTicket = { ...ticket };
+        if (files.length !== 0) {
+            const file_names = files.map((item) => item.name);
+            
+            getPresignedURL({ attachment_names: file_names })
+            .then((res) => {
+                if (res.status !== 200) {
+                    alert('Error with S3 configuration. Attachment will not be added to thread');
+                    return {};
+                } else {
+                    let presigned_urls = { ...res.data.url_dict };
+                    return presigned_urls;
+                }
+            })
+            .then(async (presigned_urls) => {
+                if (Object.keys(presigned_urls).length === 0) {
+                    return [];
+                } else {
+                    let attachments = await awsFileUpload(presigned_urls, files);
+                    return attachments;
+                }
+            })
+            .then(async (attachments) => {
+                newThreadEntry = attachments.length !== 0 ? { ...newThreadEntry, attachments: attachments } : newThreadEntry;
+                await threadEntryCreate(newThreadEntry)
                 .then((response) => {
                     updatedTicket.thread.entries.push(response.data);
                     editor.commands.setContent('');
                     setFormData({ subject: null, body: '', type: 'A', editor: '', recipients: '' });
+                    setFiles([]);
                 })
-                .then(() => {
-                    updateCurrentTicket(updatedTicket);
-                });
+            })
+            .then(() => {
+                updateCurrentTicket(updatedTicket);
+            })
+            .catch((err) => {
+                alert(err.response.data.detail)
+            })
+        } else {
+            threadEntryCreate(newThreadEntry)
+            .then((response) => {
+                updatedTicket.thread.entries.push(response.data);
+                editor.commands.setContent('');
+                setFormData({ subject: null, body: '', type: 'A', editor: '', recipients: '' });
+            })
+            .then(() => {
+                updateCurrentTicket(updatedTicket);
+            });
+        }
+    };
+
+    const awsFileUpload = async (presigned_urls, files) => {
+        let attachments = [];
+        await Promise.all(
+            Object.entries(presigned_urls).map(([fileName, url]) => {
+                const file = files.find((f) => f.name === fileName);
+                axios.put(url, file, {
+                    headers: {
+                        'Content-Type': file.type,
+                        'Content-Disposition': `inline; filename="${fileName}"`,
+                    },
+                })
+                .catch((error) => {
+                    alert('There is an error with the S3 confirguration. Attachment upload failed and will not be added to the thread.');
+                })
+                attachments.push({ name: fileName, link: url.split('?')[0], type: file.type, size: file.size, inline: 1});
+            })
+        );
+        return attachments;
+    };
+
+    const handleFileUpload = (event) => {
+        const length = event.target.files.length;
+        let tempArray = [];
+        let sizeExceed = false
+        for (let i = 0; i < length; i++) {
+            if (files.some(file => file.name === event.target.files[i].name)) {
+                alert('Cannot upload the same file more than once')
+                continue
             }
+            if (event.target.files[i].size > Number(defaultSettings.agent_max_file_size.value)) {
+                sizeExceed = true
+                continue
+            }
+            tempArray.push(event.target.files[i]);
+        }
+        setFiles((p) => [...p, ...tempArray]);
+        event.target.value = '';
+
+        if (sizeExceed) {
+            alert(`One or more files exceed the max upload limit of ${humanFileSize(defaultSettings.agent_max_file_size.value, true)}!`)
+        }
+    };
+
+    const handleDeleteFile = (idx) => {
+        setFiles((p) => [...p.slice(0, idx), ...p.slice(idx + 1)]);
+    };
+
+    function getEventText(item) {
+        const capitilize = (str) => {
+            return str
+                .split(' ')
+                .map((word) => word.charAt(0).toUpperCase() + word.substring(1))
+                .join(' ');
         };
-    
-        const awsFileUpload = async (presigned_urls, files) => {
-            let attachments = [];
-            await Promise.all(
-                Object.entries(presigned_urls).map(([fileName, url]) => {
-                    const file = files.find((f) => f.name === fileName);
-                    axios.put(url, file, {
-                        headers: {
-                            'Content-Type': file.type,
-                            'Content-Disposition': `inline; filename="${fileName}"`,
-                        },
-                    })
-                    .catch((error) => {
-                        alert('There is an error with the S3 confirguration. Attachment upload failed and will not be added to the thread.');
-                    })
-                    attachments.push({ name: fileName, link: url.split('?')[0], type: file.type, size: file.size, inline: 1});
-                })
+
+        let newValue = item.new_val;
+        let prevValue = item.prev_val;
+
+        if (item.field === 'due_date') {
+            newValue = newValue ? formatDate(newValue, 'lll') : null;
+            prevValue = prevValue ? formatDate(prevValue, 'lll') : null;
+        }
+
+        if(item.field === 'overdue') {
+            newValue = newValue ? 'True' : 'False';
+            prevValue = prevValue ? 'True' : 'False';
+        }
+
+        const field = capitilize(item.field.replace('_id', '').replace('_', ' '));
+
+        if (item.type === 'A') {
+            return (
+                <Typography variant='subtitle2' fontWeight={600} color='#6c757d'>
+                    {field} set to&nbsp;
+                    <Typography variant='subtitle2' component='span' fontWeight={600} color='black'>
+                        {newValue}
+                    </Typography>
+                </Typography>
             );
-            return attachments;
-        };
-    
-        const handleFileUpload = (event) => {
-            const length = event.target.files.length;
-            let tempArray = [];
-            let sizeExceed = false
-            for (let i = 0; i < length; i++) {
-                if (files.some(file => file.name === event.target.files[i].name)) {
-                    alert('Cannot upload the same file more than once')
-                    continue
-                }
-                if (event.target.files[i].size > Number(defaultSettings.agent_max_file_size.value)) {
-                    sizeExceed = true
-                    continue
-                }
-                tempArray.push(event.target.files[i]);
-            }
-            setFiles((p) => [...p, ...tempArray]);
-            event.target.value = '';
-    
-            if (sizeExceed) {
-                alert(`One or more files exceed the max upload limit of ${humanFileSize(defaultSettings.agent_max_file_size.value, true)}!`)
-            }
-        };
-    
-        const handleDeleteFile = (idx) => {
-            setFiles((p) => [...p.slice(0, idx), ...p.slice(idx + 1)]);
-        };
-    
-        function getEventText(item) {
-            const capitilize = (str) => {
-                return str
-                    .split(' ')
-                    .map((word) => word.charAt(0).toUpperCase() + word.substring(1))
-                    .join(' ');
-            };
-    
-            let newValue = item.new_val;
-            let prevValue = item.prev_val;
-    
-            if (item.field === 'due_date') {
-                newValue = newValue ? formatDate(newValue, 'lll') : null;
-                prevValue = prevValue ? formatDate(prevValue, 'lll') : null;
-            }
-    
-            if(item.field === 'overdue') {
-                newValue = newValue ? 'True' : 'False';
-                prevValue = prevValue ? 'True' : 'False';
-            }
-    
-            const field = capitilize(item.field.replace('_id', '').replace('_', ' '));
-    
-            if (item.type === 'A') {
-                return (
-                    <Typography variant='subtitle2' fontWeight={600} color='#6c757d'>
-                        {field} set to&nbsp;
-                        <Typography variant='subtitle2' component='span' fontWeight={600} color='black'>
-                            {newValue}
-                        </Typography>
+        } else if (item.type === 'R') {
+            return (
+                <Typography variant='subtitle2' fontWeight={600} color='#6c757d'>
+                    {field} unset from&nbsp;
+                    <Typography variant='subtitle2' component='span' fontWeight={600} color='black'>
+                        {prevValue}
                     </Typography>
-                );
-            } else if (item.type === 'R') {
-                return (
-                    <Typography variant='subtitle2' fontWeight={600} color='#6c757d'>
-                        {field} unset from&nbsp;
-                        <Typography variant='subtitle2' component='span' fontWeight={600} color='black'>
-                            {prevValue}
-                        </Typography>
-                    </Typography>
-                );
-            } else {
-                return (
+                </Typography>
+            );
+        } else {
+            return (
+                <Typography
+                    variant='subtitle2'
+                    fontWeight={600}
+                    color='#6c757d'
+                    sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        wordBreak: 'break-word',
+                    }}
+                >
+                    {field} updated from&nbsp;
                     <Typography
                         variant='subtitle2'
                         fontWeight={600}
-                        color='#6c757d'
+                        component='span'
                         sx={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            wordBreak: 'break-word',
+                            color: 'black',
                         }}
                     >
-                        {field} updated from&nbsp;
-                        <Typography
-                            variant='subtitle2'
-                            fontWeight={600}
-                            component='span'
-                            sx={{
-                                color: 'black',
-                            }}
-                        >
-                            {prevValue}
-                        </Typography>
-                        &nbsp;to&nbsp;
-                        <Typography
-                            variant='subtitle2'
-                            fontWeight={600}
-                            component='span'
-                            sx={{
-                                color: 'black',
-                            }}
-                        >
-                            {newValue}
-                        </Typography>
+                        {prevValue}
                     </Typography>
-                );
-            }
+                    &nbsp;to&nbsp;
+                    <Typography
+                        variant='subtitle2'
+                        fontWeight={600}
+                        component='span'
+                        sx={{
+                            color: 'black',
+                        }}
+                    >
+                        {newValue}
+                    </Typography>
+                </Typography>
+            );
         }
+    }
+
+    function datetime_sort(a, b) {
+		return new Date(a.created).getTime() - new Date(b.created).getTime();
+	}
+
+    function preProcessTicket(ticket) {
+		if (ticket.thread && ticket.thread.events) {
+			ticket.thread.events.forEach((event) => {
+				let eventData = JSON.parse(event.data);
+	
+				event.field = eventData.field;
+				event.prev_val = eventData.prev_val;
+				event.new_val = eventData.new_val;
+	
+				if (eventData.hasOwnProperty('new_id')) {
+					event.prev_id = eventData.prev_id;
+					event.new_id = eventData.new_id;
+				}
+			});
+		}
+		if (ticket.thread) {
+			let events_and_entries = ticket.thread.entries.concat(ticket.thread.events);
+			ticket.thread.events_and_entries = events_and_entries.sort(datetime_sort);
+		}
+		return ticket;
+	}
     
-        useEffect(() => {
-            setPostDisabled(editor.isEmpty && files.length === 0);
-        }, [formData, files]);
+    useEffect(() => {
+        setPostDisabled(editor.isEmpty && files.length === 0);
+    }, [formData, files]);
 
     useEffect(() => {
         setLoading(true)
-
         getTicketByNumber(number)
             .then(res => {
-                setTicket(res.data)
+                const preparedTicket = preProcessTicket(res.data)
+                setTicket(preparedTicket)
             })
             .catch(() => {
                 console.error('Error while fetching ticket by number')
@@ -1077,3 +1114,15 @@ export const TicketView = () => {
 //     //     </Box>
 //     // );
 // }
+
+
+const PostButton = ({ handleSubmit, disabled }) => {
+    return (
+        <Box border={disabled ? '1.5px solid #E5EFE9' : '1.5px solid #5a9ee5'} borderRadius='8px'>
+            <IconButton onClick={handleSubmit} disabled={disabled}>
+                <Send size={20} />
+            </IconButton>
+        </Box>
+    );
+};
+
