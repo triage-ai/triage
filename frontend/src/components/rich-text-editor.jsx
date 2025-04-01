@@ -1,7 +1,5 @@
 import { Box, styled } from '@mui/material';
 import {
-	LinkBubbleMenuHandler,
-	MenuButtonAddTable,
 	MenuButtonBlockquote,
 	MenuButtonBold,
 	MenuButtonBulletedList,
@@ -15,15 +13,13 @@ import {
 	RichTextEditorProvider,
 	RichTextField,
 	TableBubbleMenu,
-	TableImproved,
+	TableImproved
 } from 'mui-tiptap';
 
-import StarterKit from '@tiptap/starter-kit';
-import TableRow from '@tiptap/extension-table-row';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
-import { useRef } from 'react';
-import { useEditor } from '@tiptap/react';
+import TableRow from '@tiptap/extension-table-row';
+import StarterKit from '@tiptap/starter-kit';
 
 export const extensions = [
 	TableImproved.configure({
@@ -38,12 +34,18 @@ export const extensions = [
 
 
 
-export const RichTextEditorBox = ({ editor, children, footer, PostButton }) => (
-	<Box>
+export const RichTextEditorBox = ({ editor, children, footer, onSend }) => (
+	<Box
+		sx={{
+			display: 'flex',
+			flexDirection: 'column',
+
+		}}
+	>
 		<RichTextEditorProvider editor={editor}>
 			<StyledRichTextField
-				RichTextContentProps={{
-					className: 'App-rich-text-field',
+				MenuBarProps={{
+					className: 'App-menu-bar',
 				}}
 				variant='outlined'
 				controls={<MenuControlsContainer>
@@ -63,7 +65,6 @@ export const RichTextEditorBox = ({ editor, children, footer, PostButton }) => (
 							{/* <MenuDivider /> */}
 							{/* <MenuButtonAddTable /> */}
 						</Box>
-						{PostButton}
 					</Box>
 				</MenuControlsContainer>}
 				footer={footer}
@@ -86,12 +87,8 @@ const StyledRichTextField = styled(RichTextField)(({ theme }) => ({
 	'&.MuiTiptap-FieldContainer-focused .MuiTiptap-FieldContainer-notchedOutline': {
 		border: '1.5px solid #22874E',
 	},
-	'.App-rich-text-field': {
-		maxHeight: '200px',
-		overflowY: 'auto',
-	},
 	'& .ProseMirror': {
-		height: '100%',
+		minHeight: '100px',
 		'& h1, & h2, & h3, & h4, & h5, & h6': {},
 		'& p': {
 			wordBreak: 'break-all',

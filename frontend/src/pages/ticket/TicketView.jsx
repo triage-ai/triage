@@ -1,30 +1,38 @@
-import { Accordion, AccordionSummary, Avatar, Box, IconButton, List, ListItem, ListItemText, Skeleton, Typography, Stack, Link, ListItemAvatar, AccordionDetails } from "@mui/material"
-import { CloudUploadIcon, File, Paperclip, TicketX, X, Send } from "lucide-react"
-import { useContext, useEffect, useState } from "react"
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Stack, styled, Typography } from "@mui/material"
+import { File, Paperclip, Send, TicketX, X } from "lucide-react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Layout } from "../../components/layout"
 import { WhiteContainer } from "../../components/white-container"
 import { useData } from "../../context/DataContext"
 
-import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineSeparator, timelineItemClasses } from "@mui/lab"
+import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, timelineItemClasses, TimelineSeparator } from "@mui/lab"
 import { extensions, RichTextEditorBox } from '../../components/rich-text-editor'
 import { useTicketBackend } from "../../hooks/useTicketBackend"
 
 
 
+import { useEditor } from "@tiptap/react"
+import axios from "axios"
 import dayjs from 'dayjs'
 import { RichTextReadOnly } from 'mui-tiptap'
-import humanFileSize from '../../functions/file-size-formatter'
-import { FileCard } from './FileCard'
-import { useThreadsBackend } from "../../hooks/useThreadBackend"
 import { AuthContext } from "../../context/AuthContext"
+import formatDate from '../../functions/date-formatter'
+import humanFileSize from '../../functions/file-size-formatter'
 import { useAttachmentBackend } from "../../hooks/useAttachmentBackend"
-import { useEditor } from "@tiptap/react"
-import { CustomInput } from "../../components/custom-select"
-import formatDate from '../../functions/date-formatter';
-import axios from "axios"
+import { useThreadsBackend } from "../../hooks/useThreadBackend"
+import { FileCard } from './FileCard'
 
-
+const CustomInput = styled('input')({
+    opacity: 0,
+    position: 'absolute',
+    boxSizing: 'border-box',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '60px',
+    cursor: 'pointer',
+});
 
 export const TicketView = () => {
     const { number } = useParams()
@@ -32,6 +40,7 @@ export const TicketView = () => {
     const { getTicketByNumber } = useTicketBackend()
     const [ticket, setTicket] = useState(null)
     const [loading, setLoading] = useState(false)
+    const fileInputRef = useRef(null)
 
 
     const [formData, setFormData] = useState({ subject: null, body: '', type: 'A', editor: '', recipients: '' });
@@ -52,7 +61,13 @@ export const TicketView = () => {
             }));
         },
     });
-    
+
+    const triggerFileInput = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click()
+        }
+    }
+
     const getDirection = (agent_id, option1, option2) => {
         if ((agent_id && type === 'agent') || (!agent_id && type !== 'agent')) {
             return option1;
@@ -77,51 +92,51 @@ export const TicketView = () => {
         let updatedTicket = { ...ticket };
         if (files.length !== 0) {
             const file_names = files.map((item) => item.name);
-            
+
             getPresignedURL({ attachment_names: file_names })
-            .then((res) => {
-                if (res.status !== 200) {
-                    alert('Error with S3 configuration. Attachment will not be added to thread');
-                    return {};
-                } else {
-                    let presigned_urls = { ...res.data.url_dict };
-                    return presigned_urls;
-                }
-            })
-            .then(async (presigned_urls) => {
-                if (Object.keys(presigned_urls).length === 0) {
-                    return [];
-                } else {
-                    let attachments = await awsFileUpload(presigned_urls, files);
-                    return attachments;
-                }
-            })
-            .then(async (attachments) => {
-                newThreadEntry = attachments.length !== 0 ? { ...newThreadEntry, attachments: attachments } : newThreadEntry;
-                await threadEntryCreate(newThreadEntry)
+                .then((res) => {
+                    if (res.status !== 200) {
+                        alert('Error with S3 configuration. Attachment will not be added to thread');
+                        return {};
+                    } else {
+                        let presigned_urls = { ...res.data.url_dict };
+                        return presigned_urls;
+                    }
+                })
+                .then(async (presigned_urls) => {
+                    if (Object.keys(presigned_urls).length === 0) {
+                        return [];
+                    } else {
+                        let attachments = await awsFileUpload(presigned_urls, files);
+                        return attachments;
+                    }
+                })
+                .then(async (attachments) => {
+                    newThreadEntry = attachments.length !== 0 ? { ...newThreadEntry, attachments: attachments } : newThreadEntry;
+                    await threadEntryCreate(newThreadEntry)
+                        .then((response) => {
+                            updatedTicket.thread.entries.push(response.data);
+                            editor.commands.setContent('');
+                            setFormData({ subject: null, body: '', type: 'A', editor: '', recipients: '' });
+                            setFiles([]);
+                        })
+                })
+                .then(() => {
+                    updateCurrentTicket(updatedTicket);
+                })
+                .catch((err) => {
+                    alert(err.response.data.detail)
+                })
+        } else {
+            threadEntryCreate(newThreadEntry)
                 .then((response) => {
                     updatedTicket.thread.entries.push(response.data);
                     editor.commands.setContent('');
                     setFormData({ subject: null, body: '', type: 'A', editor: '', recipients: '' });
-                    setFiles([]);
                 })
-            })
-            .then(() => {
-                updateCurrentTicket(updatedTicket);
-            })
-            .catch((err) => {
-                alert(err.response.data.detail)
-            })
-        } else {
-            threadEntryCreate(newThreadEntry)
-            .then((response) => {
-                updatedTicket.thread.entries.push(response.data);
-                editor.commands.setContent('');
-                setFormData({ subject: null, body: '', type: 'A', editor: '', recipients: '' });
-            })
-            .then(() => {
-                updateCurrentTicket(updatedTicket);
-            });
+                .then(() => {
+                    updateCurrentTicket(updatedTicket);
+                });
         }
     };
 
@@ -136,10 +151,10 @@ export const TicketView = () => {
                         'Content-Disposition': `inline; filename="${fileName}"`,
                     },
                 })
-                .catch((error) => {
-                    alert('There is an error with the S3 confirguration. Attachment upload failed and will not be added to the thread.');
-                })
-                attachments.push({ name: fileName, link: url.split('?')[0], type: file.type, size: file.size, inline: 1});
+                    .catch((error) => {
+                        alert('There is an error with the S3 confirguration. Attachment upload failed and will not be added to the thread.');
+                    })
+                attachments.push({ name: fileName, link: url.split('?')[0], type: file.type, size: file.size, inline: 1 });
             })
         );
         return attachments;
@@ -188,7 +203,7 @@ export const TicketView = () => {
             prevValue = prevValue ? formatDate(prevValue, 'lll') : null;
         }
 
-        if(item.field === 'overdue') {
+        if (item.field === 'overdue') {
             newValue = newValue ? 'True' : 'False';
             prevValue = prevValue ? 'True' : 'False';
         }
@@ -253,31 +268,31 @@ export const TicketView = () => {
     }
 
     function datetime_sort(a, b) {
-		return new Date(a.created).getTime() - new Date(b.created).getTime();
-	}
+        return new Date(a.created).getTime() - new Date(b.created).getTime();
+    }
 
     function preProcessTicket(ticket) {
-		if (ticket.thread && ticket.thread.events) {
-			ticket.thread.events.forEach((event) => {
-				let eventData = JSON.parse(event.data);
-	
-				event.field = eventData.field;
-				event.prev_val = eventData.prev_val;
-				event.new_val = eventData.new_val;
-	
-				if (eventData.hasOwnProperty('new_id')) {
-					event.prev_id = eventData.prev_id;
-					event.new_id = eventData.new_id;
-				}
-			});
-		}
-		if (ticket.thread) {
-			let events_and_entries = ticket.thread.entries.concat(ticket.thread.events);
-			ticket.thread.events_and_entries = events_and_entries.sort(datetime_sort);
-		}
-		return ticket;
-	}
-    
+        if (ticket.thread && ticket.thread.events) {
+            ticket.thread.events.forEach((event) => {
+                let eventData = JSON.parse(event.data);
+
+                event.field = eventData.field;
+                event.prev_val = eventData.prev_val;
+                event.new_val = eventData.new_val;
+
+                if (eventData.hasOwnProperty('new_id')) {
+                    event.prev_id = eventData.prev_id;
+                    event.new_id = eventData.new_id;
+                }
+            });
+        }
+        if (ticket.thread) {
+            let events_and_entries = ticket.thread.entries.concat(ticket.thread.events);
+            ticket.thread.events_and_entries = events_and_entries.sort(datetime_sort);
+        }
+        return ticket;
+    }
+
     useEffect(() => {
         setPostDisabled(editor.isEmpty && files.length === 0);
     }, [formData, files]);
@@ -485,7 +500,6 @@ export const TicketView = () => {
                             {(type === 'user' || permissions.hasOwnProperty('ticket.edit')) && (
                                 <Box sx={{ px: '28px', py: '20px' }}>
                                     <RichTextEditorBox
-                                        PostButton={<PostButton handleSubmit={handleSubmit} disabled={postDisabled} />}
                                         editor={editor}
                                         footer={
                                             <Stack>
@@ -494,47 +508,90 @@ export const TicketView = () => {
                                                         <List dense>
                                                             {files.map((file, idx) => (
                                                                 <ListItem
+                                                                    sx={{
+                                                                        height: '40px',
+                                                                    }}
                                                                     key={idx}
                                                                     secondaryAction={
                                                                         <IconButton edge='end' aria-label='delete' onClick={() => handleDeleteFile(idx)}>
-                                                                            <X />
+                                                                            <X size={17}/>
                                                                         </IconButton>
                                                                     }
                                                                 >
                                                                     <ListItemAvatar>
-                                                                        <Avatar>
-                                                                            <File />
+                                                                        <Avatar
+                                                                            sx={{
+                                                                                height: '30px',
+                                                                                width: '30px'
+                                                                            }}
+                                                                        >
+                                                                            <File size={15} />
                                                                         </Avatar>
                                                                     </ListItemAvatar>
-                                                                    <ListItemText primary={file.name} secondary={humanFileSize(file.size, true, 1)} />
+                                                                    <ListItemText
+                                                                        primaryTypographyProps={{
+                                                                            fontSize: '0.8rem',
+                                                                            fontWeight: 600,
+                                                                            color: 'grey'
+                                                                        }}
+                                                                        secondaryTypographyProps={{
+                                                                            fontSize: '0.7rem',
+                                                                            color: 'grey'
+                                                                        }}
+                                                                        primary={file.name} secondary={humanFileSize(file.size, true, 1)}
+                                                                    />
                                                                 </ListItem>
                                                             ))}
                                                         </List>
                                                     </Box>
                                                 )}
 
-                                                <Stack
-                                                    justifyContent={'center'}
-                                                    direction={'row'}
-                                                    py={2}
-                                                    sx={{
-                                                        borderTop: '1.5px solid #E5EFE9',
-                                                    }}
-                                                    spacing={1}
-                                                    height='60px'
-                                                >
-                                                    <CloudUploadIcon color='grey' />
-                                                    <Typography color='grey'>
-                                                        Drop files to attach, or
-                                                        <label>
-                                                            <Link underline='none'> browse</Link>
-                                                        </label>
-                                                    </Typography>
-                                                </Stack>
-                                                <CustomInput type='file' onChange={(event) => handleFileUpload(event)} multiple />
                                             </Stack>
                                         }
-                                    ></RichTextEditorBox>
+                                    />
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            mt: 1,
+                                        }}
+                                    >
+                                        <Button
+                                            disableElevation
+                                            disableRipple
+                                            onClick={triggerFileInput}
+                                            startIcon={<Paperclip size={15} />}
+                                            sx={{
+                                                textTransform: 'none',
+                                                fontWeight: 600,
+                                                height: '25px',
+                                                fontSize: '0.75rem'
+                                            }}
+                                        >
+                                            Drop or click to add files
+                                        </Button>
+                                        <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileUpload} multiple />
+                                        <Button
+                                            variant='contained'
+                                            disableElevation
+                                            disableRipple
+                                            size='small'
+                                            onClick={handleSubmit}
+                                            disabled={postDisabled}
+                                            sx={{
+                                                color: 'white',
+                                                backgroundColor: 'primary.main',
+                                                borderRadius: '8px',
+                                                textTransform: 'none',
+                                                fontWeight: 600,
+                                                '&:hover': {
+                                                    backgroundColor: '#29b866',
+                                                },
+                                            }}
+                                        >
+                                            Send
+                                        </Button>
+                                    </Box>
 
                                     {/* <Box mt={2} width={'100%'} textAlign={'center'}>
                                                 <CircularButton sx={{ py: 2, px: 6, width: 200 }} onClick={handleSubmit} disabled={postDisabled}>

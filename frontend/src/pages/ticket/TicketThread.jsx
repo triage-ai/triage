@@ -436,7 +436,8 @@ export const TicketThread = ({ ticket, closeDrawer, updateCurrentTicket, type })
 						editor={editor}
 						footer={
 							<Stack>
-								{files.length !== 0 && (
+								
+								{/* {files.length !== 0 && (
 									<Box sx={{ borderTop: '1.5px solid #E5EFE9', maxHeight: '200px', overflowY: 'auto' }}>
 										<List dense>
 											{files.map((file, idx) => (
@@ -458,7 +459,7 @@ export const TicketThread = ({ ticket, closeDrawer, updateCurrentTicket, type })
 											))}
 										</List>
 									</Box>
-								)}
+								)} */}
 
 								<Stack
 									justifyContent={'center'}
