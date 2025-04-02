@@ -4,7 +4,7 @@ import { Header } from './header';
 export const AppBarHeight = '100px';
 
 export const DrawerHeader = styled('div')(({ theme }) => ({
-	height: `calc(${AppBarHeight} + 5px)`,
+	height: `calc(${AppBarHeight})`,
 	// necessary for content to be below app bar
 	...theme.mixins.toolbar,
 }));
@@ -15,7 +15,7 @@ export const DrawerContentContainer = styled(Box)(() => ({
 	background: '#f1f4f2',
 }));
 
-export const Layout = ({ children, title, subtitle, buttonInfo, AddResource, refreshResource, setConfirmation }) => {
+export const Layout = ({ children, title, subtitle, buttonInfo, AddResource, refreshResource, setConfirmation, ticket }) => {
 	return (
 		<Box sx={{ display: 'flex', background: '#FFF' }}>
 			<Header
@@ -25,6 +25,7 @@ export const Layout = ({ children, title, subtitle, buttonInfo, AddResource, ref
 				AddResource={AddResource}
 				refreshResource={refreshResource}
 				setConfirmation={setConfirmation}
+				ticket={ticket}
 			/>
 			<DrawerContentContainer>
 				<DrawerHeader />

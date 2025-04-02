@@ -26,13 +26,6 @@ dayjs.extend(utc)
 
 export const AddTicket = ({ handleCreated, handleEdited, editTicket, setConfirmation }) => {
 
-	AddTicket.propTypes = {
-		handleCreated: PropTypes.func,
-		handleEdited: PropTypes.func,
-		editTicket: PropTypes.object,
-		setConfirmation: PropTypes.func
-	}
-
 	const { createTicket, updateTicket, getTicketForms } = useTicketBackend();
 	const { getFormById } = useFormBackend();
 
@@ -391,3 +384,10 @@ export const AddTicket = ({ handleCreated, handleEdited, editTicket, setConfirma
 		</>
 	);
 };
+
+AddTicket.propTypes = {
+		handleCreated: PropTypes.func,
+		handleEdited: PropTypes.func,
+		editTicket: PropTypes.object,
+		setConfirmation: PropTypes.func
+	}

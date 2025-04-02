@@ -19,7 +19,7 @@ import {
 	TableRow,
 	Typography
 } from '@mui/material';
-import { Filter, Pencil, RotateCw, Search, TicketPlus, X } from 'lucide-react';
+import { ExternalLink, Filter, Pencil, RotateCw, Search, TicketPlus, X } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { StyledInput } from '../../components/custom-select';
@@ -519,9 +519,9 @@ export const Tickets = () => {
 												// spacing={0.5}
 												sx={{ justifyContent: 'flex-end' }}
 											>
-												{permissions.hasOwnProperty('ticket.edit') && <IconButton onClick={event => handleDialogOpen(event, ticket)}>
-													<Pencil size={18} />
-												</IconButton>}
+												<IconButton onClick={()=> window.open('tickets/' + ticket.number , "_blank")}>
+													<ExternalLink size={18} />
+												</IconButton>
 											</Stack>
 										</TableCell>
 									</TableRow>

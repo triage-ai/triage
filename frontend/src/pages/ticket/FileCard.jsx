@@ -4,7 +4,7 @@ import humanFileSize from '../../functions/file-size-formatter';
 
 export const FileCard = ({ file }) => {
 
-	const SIZE = 30;
+	const SIZE = 20;
 
 	const icons = {
 		'video/mpeg': <FileVideo size={SIZE} color='#6e7772' strokeWidth={1} />,
@@ -55,8 +55,9 @@ export const FileCard = ({ file }) => {
 		>
 		<Stack 
 			direction={'row'}
-			px={3}
-			py={1}
+			px={2}
+			py={'2px'}
+			mt={1}
 			borderRadius={3}
 			spacing={2}
 			alignItems={'center'}
@@ -73,7 +74,7 @@ export const FileCard = ({ file }) => {
 				<Typography
 					noWrap
 					sx={{
-						fontSize: '0.85rem',
+						fontSize: '0.80rem',
 						overflow: 'hidden',
 						textOverflow: 'ellipsis',
 						display: '-webkit-box',
@@ -81,14 +82,14 @@ export const FileCard = ({ file }) => {
 						WebkitLineClamp: 2,
 						display: 'block',
 					}}
-					fontWeight={500}
+					fontWeight={600}
 				>
 					{file.name}
 				</Typography>
 				<Typography
 					variant="subtitle2"
 					sx={{
-						fontSize: '0.75rem',
+						fontSize: '0.70rem',
 						lineHeight: 1.2,
 						overflow: 'hidden',
 						textOverflow: 'ellipsis',

@@ -1378,7 +1378,9 @@ def update_ticket_with_thread(background_task: BackgroundTasks, db: Session, tic
                 name = naming_dict[key]
 
                 if key == 'status_id':
-                    if new_val.state == 'closed' or prev_val.state == 'closed':
+                    if (new_val.state == 'closed' and prev_val.state != 'closed') or (new_val.state != 'closed' and prev_val.state == 'closed'):
+                        print(new_val.state)
+                        print(prev_val.state)
                         if new_val.state == 'closed' and prev_val.state != 'closed':
                             close_time = datetime.now(
                                 timezone.utc).replace(microsecond=0)

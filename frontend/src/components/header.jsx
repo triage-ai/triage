@@ -80,7 +80,8 @@ export const Header = ({
 	buttonInfo,
 	AddResource,
 	refreshResource,
-	setConfirmation
+	setConfirmation,
+	ticket,
 }) => {
 
 	const [mobileOpen, setMobileOpen] = useState(false);
@@ -240,7 +241,7 @@ export const Header = ({
 						<X size={20} />
 					</IconButton>
 
-					{AddResource && <AddResource handleCreated={handleCreated} setConfirmation={setConfirmation}/>}
+					{AddResource && <AddResource handleCreated={handleCreated} setConfirmation={setConfirmation} editTicket={ticket} handleEdited={handleCreated}/>}
 				</Box>
 
 			</Dialog>

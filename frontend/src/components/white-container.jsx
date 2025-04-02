@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 
-export const WhiteContainer = ({ children, noPadding }) => {
+export const WhiteContainer = ({ children, noPadding, sx }) => {
 	return (
 		<Box
 			sx={{
@@ -10,6 +10,7 @@ export const WhiteContainer = ({ children, noPadding }) => {
 				px: noPadding ? 0 : 2.25,
 				// boxShadow: 'rgba(149, 157, 165, 0.2) 0px 4px 12px',
 				minHeight: '60vh',
+				...sx
 			}}
 		>
 			{children}
