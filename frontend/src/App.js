@@ -191,10 +191,19 @@ function App() {
 						<Route 
 							path='guest/ticket' 
 							element={
-							<DrawerProvider>
-								<GuestTicketView />
-							</DrawerProvider>
-						}/>
+								<DrawerProvider>
+									<GuestTicketView />
+								</DrawerProvider>
+							}	
+						/>
+						<Route 
+							path='user/tickets/number/:number' 
+							element={
+								<DrawerProvider>
+									<GuestTicketView />
+								</DrawerProvider>
+							}	
+						/>
 						<Route
 							path='guest/ticket/create'
 							element={<GuestAddTicket />}

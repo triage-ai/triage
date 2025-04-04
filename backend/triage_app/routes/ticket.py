@@ -80,6 +80,18 @@ def get_ticket_by_number(number: str, db: Session = Depends(get_db), agent_data:
             status_code=400, detail=f'No ticket found with number {number}')
     return ticket
 
+
+@router.get("/user/number/{number}", response_model=TicketJoined)
+def get_ticket_by_number(number: str, db: Session = Depends(get_db), user_data: UserData = Depends(decode_user)):
+    ticket = get_ticket_by_filter(db, filter={'number': number})
+    if not ticket:
+        raise HTTPException(
+            status_code=400, detail=f'No ticket found with number {number}')
+    if ticket.user_id != user_data.user_id:
+        raise HTTPException(
+            status_code=400, detail=f'Not accessible for this user')
+    return ticket
+
 @router.get("/guest/number/{number}", response_model=TicketJoined)
 def get_ticket_by_number_by_guest(number: str, db: Session = Depends(get_db), guest_data: GuestData = Depends(decode_guest)):
     ticket = get_ticket_by_filter(db, filter={'number': number})
@@ -119,7 +131,6 @@ def get_ticket_queue(queue_id: int, search: str = '', page: int = None, size: in
         output = paginate(db, query)
         dump = output.dict()
         dump['queue_id'] = queue_id
-
         return PageWithQueue(**dump)
 
 

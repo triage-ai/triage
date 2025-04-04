@@ -69,7 +69,7 @@ export const MessageContainer = ({ item, type }) => {
                                 fontWeight: 700,
                             }}
                         >
-                            {item.owner.charAt(0)}
+                            {item.owner.charAt(0).toUpperCase()}
                         </Typography>
                     </Avatar>
                     <Box

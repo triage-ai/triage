@@ -53,7 +53,7 @@ export const TicketView = () => {
     const { getPresignedURL } = useAttachmentBackend();
     const { agentAuthState, userAuthState, permissions } = useContext(AuthContext);
     const [confirmation, setConfirmation] = useState('')
-    const type = useMemo(() => (agentAuthState ? 'agent' : userAuthState ? 'user' : 'guest'), [agentAuthState, userAuthState])
+    const type = useMemo(() => (agentAuthState.isAuth === true ? 'agent' : userAuthState.isAuth === true ? 'user' : 'guest'), [agentAuthState, userAuthState])
     const editor = useEditor({
         extensions: extensions,
         content: '',
@@ -533,7 +533,7 @@ export const TicketView = () => {
                                                                             fontWeight: 700,
                                                                         }}
                                                                     >
-                                                                        {item.owner.charAt(0)}
+                                                                        {item.owner.charAt(0).toUpperCase()}
                                                                     </Typography>
                                                                 </Avatar>
                                                                 <Typography
@@ -709,7 +709,7 @@ export const TicketView = () => {
                                                     fontWeight: 700
                                                 }}
                                             >
-                                                {ticket.agent.firstname?.charAt(0)}
+                                                {ticket.agent.firstname?.charAt(0).toUpperCase()}
                                             </Typography>
                                         </Avatar>
                                         <Typography
@@ -759,7 +759,7 @@ export const TicketView = () => {
                                                     fontWeight: 700
                                                 }}
                                             >
-                                                {ticket.user.firstname?.charAt(0)}
+                                                {ticket.user.firstname?.charAt(0).toUpperCase()}
                                             </Typography>
                                         </Avatar>
                                         <Typography
@@ -795,77 +795,126 @@ export const TicketView = () => {
                                 >
                                     Status
                                 </Typography>
-                                <Chip
-                                    size="small"
-                                    label={ticket.status.name}
-                                    sx={{ backgroundColor: statusStyles[ticket.status.state], px: '8px', fontWeight: 600, mt: 1 }}
-                                />
+                                {ticket.status ? (
+                                    <Chip
+                                        size="small"
+                                        label={ticket.status.name}
+                                        sx={{ backgroundColor: statusStyles[ticket.status.state], px: '8px', fontWeight: 600, mt: 1 }}
+                                    />
+                                ) : (
+                                    <Typography
+                                        variant="subtitle2"
+                                        color={'#6e7772'}
+                                        fontWeight={600}
+                                    >
+                                        No status
+                                    </Typography>
+                                )}
                                 <Divider sx={{ my: 2 }} />
+                                {type === 'agent' && (
+                                    <>
+                                        {/* Priority */}
+                                        <Typography
+                                            sx={{
+                                                color: '#6e7772',
+                                                fontWeight: 700,
+                                                fontSize: '0.8rem'
+                                            }}
+                                        >
+                                            Priority
+                                        </Typography>
+                                        {ticket.priority ? (
+                                            <Chip
+                                                size="small"
+                                                label={ticket.priority.priority_desc}
+                                                sx={{ backgroundColor: ticket.priority.priority_color, px: '8px', fontWeight: 600, mt: 1 }}
+                                            />
+                                        ) : (
+                                            <Typography
+                                                variant='subtitle2'
+                                                color={'#6e7772'}
+                                                fontWeight={600}
+                                            >
+                                                No priority
+                                            </Typography>
+                                        )}
+                                        <Divider sx={{ my: 2 }} />
 
-                                {/* Priority */}
-                                <Typography
-                                    sx={{
-                                        color: '#6e7772',
-                                        fontWeight: 700,
-                                        fontSize: '0.8rem'
-                                    }}
-                                >
-                                    Priority
-                                </Typography>
-                                <Chip
-                                    size="small"
-                                    label={ticket.priority.priority_desc}
-                                    sx={{ backgroundColor: ticket.priority.priority_color, px: '8px', fontWeight: 600, mt: 1 }}
-                                />
-                                <Divider sx={{ my: 2 }} />
+                                        {/* Topic */}
+                                        <Typography
+                                            sx={{
+                                                color: '#6e7772',
+                                                fontWeight: 700,
+                                                fontSize: '0.8rem'
+                                            }}
+                                        >
+                                            Topic
+                                        </Typography>
+                                        <Typography
+                                            sx={{
+                                                mt: 1,
+                                                flexWrap: 'wrap',
+                                                wordBreak: 'break-word',
+                                                fontWeight: 600,
+                                                fontSize: '0.8rem',
+                                                color: ticket.topic?.topic ? 'black' : '#6e7772'
+                                            }}
+                                        >
+                                            {ticket.topic?.topic || 'No topic'}
+                                        </Typography>
+                                        <Divider sx={{ my: 2 }} />
 
-                                {/* Topic */}
-                                <Typography
-                                    sx={{
-                                        color: '#6e7772',
-                                        fontWeight: 700,
-                                        fontSize: '0.8rem'
-                                    }}
-                                >
-                                    Topic
-                                </Typography>
-                                <Typography
-                                    sx={{
-                                        mt: 1,
-                                        flexWrap: 'wrap',
-                                        wordBreak: 'break-word',
-                                        fontWeight: 600,
-                                        fontSize: '0.8rem'
-                                    }}
-                                >
-                                    {ticket.topic.topic}
-                                </Typography>
-                                <Divider sx={{ my: 2 }} />
-
-                                {/* Department */}
-                                <Typography
-                                    sx={{
-                                        color: '#6e7772',
-                                        fontWeight: 700,
-                                        fontSize: '0.8rem'
-                                    }}
-                                >
-                                    Department
-                                </Typography>
-                                <Typography
-                                    sx={{
-                                        mt: 1,
-                                        flexWrap: 'wrap',
-                                        wordBreak: 'break-word',
-                                        fontWeight: 600,
-                                        fontSize: '0.8rem'
-                                    }}
-                                >
-                                    {ticket.dept.name}
-                                </Typography>
-                                <Divider sx={{ my: 2 }} />
+                                        {/* Department */}
+                                        <Typography
+                                            sx={{
+                                                color: '#6e7772',
+                                                fontWeight: 700,
+                                                fontSize: '0.8rem'
+                                            }}
+                                        >
+                                            Department
+                                        </Typography>
+                                        <Typography
+                                            sx={{
+                                                mt: 1,
+                                                flexWrap: 'wrap',
+                                                wordBreak: 'break-word',
+                                                fontWeight: 600,
+                                                fontSize: '0.8rem',
+                                                color: ticket.dept?.name ? 'black' : '#6e7772'
+                                            }}
+                                        >
+                                            {ticket.dept?.name || 'No department'}
+                                        </Typography>
+                                        <Divider sx={{ my: 2 }} />
+                                        
+                                        {/* SLA */}
+                                        <Typography
+                                            sx={{
+                                                color: '#6e7772',
+                                                fontWeight: 700,
+                                                fontSize: '0.8rem'
+                                            }}
+                                        >
+                                            SLA
+                                        </Typography>
+                                        <Typography
+                                            sx={{
+                                                mt: 1,
+                                                flexWrap: 'wrap',
+                                                wordBreak: 'break-word',
+                                                fontWeight: 600,
+                                                fontSize: '0.8rem',
+                                                color: ticket.sla?.name ? 'black' : '#6e7772'
+                                            }}
+                                        >
+                                            {ticket.sla?.name || 'No sla'}
+                                        </Typography>
+                                    </>
+                                )}
 
                                 {/* Due Dates */}
+                                <Divider sx={{ my: 2 }} />
                                 <Typography
                                     sx={{
                                         color: '#6e7772',
@@ -885,13 +934,24 @@ export const TicketView = () => {
                                                     year: 'numeric',
                                                 })
                                                 .replace(',', ' ')
-                                            : new Date(ticket.est_due_date)
+                                            : ticket.est_due_date ? 
+                                                new Date(ticket.est_due_date)
                                                 .toLocaleDateString('en-US', {
                                                     day: '2-digit',
                                                     month: 'short',
                                                     year: 'numeric',
                                                 })
                                                 .replace(',', ' ')
+                                                : ticket.est_due_date ?
+                                                new Date(ticket.est_due_date)
+                                                .toLocaleDateString('en-US', {
+                                                    day: '2-digit',
+                                                    month: 'short',
+                                                    year: 'numeric',
+                                                })
+                                                .replace(',', ' ')
+                                                : 
+                                                'No due date'
                                         }
                                     </Typography>
                                     {ticket.overdue === 1 && (
@@ -902,32 +962,9 @@ export const TicketView = () => {
                                         />
                                     )}
                                 </Stack>
-                                <Divider sx={{ my: 2 }} />
 
-                                {/* SLA */}
-                                <Typography
-                                    sx={{
-                                        color: '#6e7772',
-                                        fontWeight: 700,
-                                        fontSize: '0.8rem'
-                                    }}
-                                >
-                                    SLA
-                                </Typography>
-                                <Typography
-                                    sx={{
-                                        mt: 1,
-                                        flexWrap: 'wrap',
-                                        wordBreak: 'break-word',
-                                        fontWeight: 600,
-                                        fontSize: '0.8rem',
-                                        color: ticket.sla?.name ? 'black' : '#6e7772'
-                                    }}
-                                >
-                                    {ticket.sla?.name || 'No sla'}
-                                </Typography>
-                                {/* 
-                                {ticket.form_entry.form.fields && (
+                                
+                                {ticket?.form_entry?.form?.fields && (
                                     <Divider sx={{ my: 2 }} />
                                 )}
 
@@ -955,7 +992,7 @@ export const TicketView = () => {
                                         </Typography>
                                         {ticket?.form_entry?.form?.fields.length !== idx + 1 && <Divider sx={{ my: 2 }} />}
                                     </>
-                                ))} */}
+                                ))}
 
 
                             </Box>
@@ -982,15 +1019,7 @@ export const TicketView = () => {
                         </Typography>
                     </Box>
                 }
-
-
-
-
-
-
             </WhiteContainer>
-
-
         </Layout>
 
     )

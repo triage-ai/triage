@@ -40,7 +40,7 @@ export const UserMultiSelect = ({ onChange, values, ...props }) => {
             renderTags={(values, getTagProps) =>
                 values.map((option, index) => {
                     const { key, ...tagProps } = getTagProps({ index });
-                    return <Chip label={option} key={key} {...tagProps} />
+                    return <Chip size='small' sx={{ fontWeight: 600 }} label={option} key={key} {...tagProps} />
                 })
             }
             renderOption={(props, item) => (

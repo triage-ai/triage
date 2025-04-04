@@ -306,10 +306,18 @@ const Department = ({ selectedPeriod, selectedDate, category, timedata }) => {
 		const start_date = dayjs(selectedDate).format('MM-DD-YYYY');
 		getDashboardStats(start_date, calculateNewDate(selectedDate, selectedPeriod), 'department').then((res) => {
 			res.data.forEach((department) => {
+				// if (category.length) {
+				// 	let new_cat = category.find((cat) => cat.dept_id === department.category_id);
+				// 	if (new_cat && new_cat.name) {
+				// 		department.category_name = new_cat.name;
+				// 	}
+				// }
 				if (category.length) {
-					let new_cat = category.find((cat) => cat.dept_id === department.category_id);
-					if (new_cat && new_cat.name) {
+					if (department.category_id) {
+						let new_cat = category.find((cat) => cat.dept_id === department.category_id);
 						department.category_name = new_cat.name;
+					} else {
+						department.category_name = 'Deleted Department';
 					}
 				}
 			});
@@ -378,8 +386,12 @@ const Topics = ({ selectedPeriod, selectedDate, category, timedata }) => {
 		getDashboardStats(start_date, calculateNewDate(selectedDate, selectedPeriod), 'topics').then((res) => {
 			res.data.forEach((department) => {
 				if (category.length) {
-					let new_cat = category.find((cat) => cat.topic_id === department.category_id);
-					department.category_name = new_cat.topic;
+					if (department.category_id) {
+						let new_cat = category.find((cat) => cat.topic_id === department.category_id);
+						department.category_name = new_cat.topic;
+					} else {
+						department.category_name = 'Deleted Topic';
+					}
 				}
 			});
 			setDashboardData(res.data);

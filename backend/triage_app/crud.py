@@ -814,7 +814,9 @@ def create_ticket(background_task: BackgroundTasks, db: Session, ticket: TicketC
                 # do settings here
                 default_dept = db.query(models.Settings).filter(
                     models.Settings.key == 'default_dept_id').first()
-                db_ticket.dept_id = default_dept.value
+                if default_dept.value:
+                    db_ticket.dept_id = int(default_dept.value)
+                # print('settings dept')
             else:
                 db_ticket.dept_id = db_topic.dept_id
 
@@ -824,7 +826,8 @@ def create_ticket(background_task: BackgroundTasks, db: Session, ticket: TicketC
                 # do settings here
                 default_status = db.query(models.Settings).filter(
                     models.Settings.key == 'default_status_id').first()
-                db_ticket.status_id = default_status.value
+                if default_status.value:
+                    db_ticket.status_id = int(default_status.value)
             else:
                 db_ticket.status_id = db_topic.status_id
 
@@ -834,7 +837,8 @@ def create_ticket(background_task: BackgroundTasks, db: Session, ticket: TicketC
                 # do settings here
                 default_priority = db.query(models.Settings).filter(
                     models.Settings.key == 'default_priority_id').first()
-                db_ticket.priority_id = default_priority.value
+                if default_priority.value:
+                    db_ticket.priority_id = int(default_priority.value)
             else:
                 db_ticket.priority_id = db_topic.priority_id
 
@@ -849,7 +853,8 @@ def create_ticket(background_task: BackgroundTasks, db: Session, ticket: TicketC
                     # print('settings sla')
                     default_sla = db.query(models.Settings).filter(
                         models.Settings.key == 'default_sla_id').first()
-                    db_ticket.sla_id = int(default_sla.value)
+                    if default_sla.value:
+                        db_ticket.sla_id = int(default_sla.value)
                 else:
                     # print('dept sla')
                     db_ticket.sla_id = db_department.sla_id
@@ -858,8 +863,9 @@ def create_ticket(background_task: BackgroundTasks, db: Session, ticket: TicketC
                 db_ticket.sla_id = db_topic.sla_id
         # We need to follow the flow of ticket -> topic -> department value for priority etc.
 
-        db_sla = db.query(models.SLA).filter(models.SLA.sla_id == db_ticket.sla_id).first()
-        db_ticket.est_due_date = datetime.strptime((datetime.now(timezone.utc) + timedelta(hours=db_sla.grace_period)).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
+        if db_ticket.sla_id:
+            db_sla = db.query(models.SLA).filter(models.SLA.sla_id == db_ticket.sla_id).first()
+            db_ticket.est_due_date = datetime.strptime((datetime.now(timezone.utc) + timedelta(hours=db_sla.grace_period)).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
         db.add(db_ticket)
         db.commit()
         db.refresh(db_ticket)
@@ -1379,8 +1385,6 @@ def update_ticket_with_thread(background_task: BackgroundTasks, db: Session, tic
 
                 if key == 'status_id':
                     if (new_val.state == 'closed' and prev_val.state != 'closed') or (new_val.state != 'closed' and prev_val.state == 'closed'):
-                        print(new_val.state)
-                        print(prev_val.state)
                         if new_val.state == 'closed' and prev_val.state != 'closed':
                             close_time = datetime.now(
                                 timezone.utc).replace(microsecond=0)
@@ -1692,6 +1696,11 @@ def delete_department(db: Session, dept_id: int):
         models.Department.dept_id == dept_id).delete()
     if affected == 0:
         return False
+    default_dept = get_settings_by_filter(db, filter={'key': 'default_dept_id'})
+    if default_dept.value:
+        if int(default_dept.value) == dept_id:
+            default_dept.value = None
+            # db.update(default_dept)
     db.commit()
     return True
 
@@ -2013,6 +2022,11 @@ def delete_topic(db: Session, topic_id: int):
         models.Topic.topic_id == topic_id).delete()
     if affected == 0:
         return False
+    default_topic = get_settings_by_filter(db, filter={'key': 'default_topic_id'})
+    if default_topic.value:
+        if int(default_topic.value) == topic_id:
+            default_topic.value = None
+            # db.update(default_sla)
     db.commit()
     return True
 
@@ -2281,6 +2295,11 @@ def delete_sla(db: Session, sla_id: int):
         models.SLA.sla_id == sla_id).delete()
     if affected == 0:
         return False
+    default_sla = get_settings_by_filter(db, filter={'key': 'default_sla_id'})
+    if default_sla.value:
+        if int(default_sla.value) == sla_id:
+            default_sla.value = None
+            # db.update(default_sla)
     db.commit()
     return True
 
@@ -3531,6 +3550,19 @@ def delete_queue(db: Session, queue_id: int):
         models.Queue.queue_id == queue_id).delete()
     if affected == 0:
         return False
+    default_queue = get_settings_by_filter(db, filter={'key': 'default_ticket_queue'})
+    if default_queue.value:
+        if int(default_queue.value) == queue_id:
+            default_queue.value = None
+            # db.update(default_sla)
+    
+    db_agents = db.query(models.Agent)
+    for agent in db_agents:
+        default_preferences = ast.literal_eval(agent.preferences)
+        if default_preferences['agent_default_ticket_queue'] == queue_id:
+            default_preferences['agent_default_ticket_queue'] = 0
+            agent.preferences = json.dumps(default_preferences)
+            # db_agents.update(agent)
     db.commit()
     return True
 

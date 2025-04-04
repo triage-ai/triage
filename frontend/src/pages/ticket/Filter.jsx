@@ -276,7 +276,7 @@ const MultiBox = ({ filters, setFilters, idx }) => {
             renderTags={(values, getTagProps) =>
                 values.map((option, index) => {
                     const { key, ...tagProps } = getTagProps({ index });
-                    return <Chip label={option} key={key} {...tagProps} />
+                    return <Chip size='small' sx={{ fontWeight: 600 }} label={option} key={key} {...tagProps} />
                 })
             }
             onChange={(e, values) => handleMultiSelectChange(values, idx)}
@@ -432,7 +432,7 @@ const PriorityMultiBox = ({ filters, setFilters, idx }) => {
             renderTags={(values, getTagProps) =>
                 values.map((option, index) => {
                     const { key, ...tagProps } = getTagProps({ index });
-                    return <Chip label={option} key={key} {...tagProps} />
+                    return <Chip size='small' sx={{ fontWeight: 600 }} label={option} key={key} {...tagProps} />
                 })
             }
             onChange={(e, values) => handleMultiSelectChange(values, idx)}
@@ -469,7 +469,7 @@ const StatusMultiBox = ({ filters, setFilters, idx }) => {
             renderTags={(values, getTagProps) =>
                 values.map((option, index) => {
                     const { key, ...tagProps } = getTagProps({ index });
-                    return <Chip label={option} key={key} {...tagProps} />
+                    return <Chip size='small' sx={{ fontWeight: 600 }} label={option} key={key} {...tagProps} />
                 })
             }
             onChange={(e, values) => handleMultiSelectChange(values, idx)}
@@ -506,7 +506,7 @@ const DepartmentMultiBox = ({ filters, setFilters, idx }) => {
             renderTags={(values, getTagProps) =>
                 values.map((option, index) => {
                     const { key, ...tagProps } = getTagProps({ index });
-                    return <Chip label={option} key={key} {...tagProps} />
+                    return <Chip size='small' sx={{ fontWeight: 600 }} label={option} key={key} {...tagProps} />
                 })
             }
             onChange={(e, values) => handleMultiSelectChange(values, idx)}
@@ -543,7 +543,7 @@ const GroupMultiBox = ({ filters, setFilters, idx }) => {
             renderTags={(values, getTagProps) =>
                 values.map((option, index) => {
                     const { key, ...tagProps } = getTagProps({ index });
-                    return <Chip label={option} key={key} {...tagProps} />
+                    return <Chip size='small' sx={{ fontWeight: 600 }} label={option} key={key} {...tagProps} />
                 })
             }
             onChange={(e, values) => handleMultiSelectChange(values, idx)}

@@ -20,7 +20,7 @@ import {
 	Typography
 } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
-import { ChevronDown, CircleUserRound, LogOut, Menu, Pencil, Search, TicketPlus, X } from 'lucide-react';
+import { ChevronDown, CircleUserRound, ExternalLink, LogOut, Menu, Pencil, Search, TicketPlus, X } from 'lucide-react';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppBarHeight } from '../../components/layout';
@@ -299,7 +299,7 @@ export const UserTickets = () => {
 							sx={{ mr: 1 }}
 							onClick={handleDialogOpen}
 						>
-							{<TicketPlus size={20} />}
+							{<TicketPlus size={20} style={{ marginRight: '4px' }} />}
 							{'Add ticket'}
 						</CircularButton>
 
@@ -549,8 +549,8 @@ export const UserTickets = () => {
 														// spacing={0.5}
 														sx={{ justifyContent: 'flex-end' }}
 													>
-														<IconButton onClick={event => handleDialogOpen(event, ticket)}>
-															<Pencil size={18} />
+														<IconButton onClick={()=> window.open('tickets/number/' + ticket.number , "_blank")}>
+															<ExternalLink size={18} />
 														</IconButton>
 													</Stack>
 												</TableCell>

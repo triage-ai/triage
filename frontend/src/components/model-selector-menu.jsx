@@ -105,6 +105,7 @@ export const ModelSelectorMenu = ({ devModels, anchorEl, open, handleClose, hand
 					</Box>
 
 					<Chip
+						size='small'
 						label={
 							<Typography
 								variant="caption"
@@ -152,6 +153,7 @@ export const ModelSelectorMenu = ({ devModels, anchorEl, open, handleClose, hand
 						</Box>
 
 						<Chip
+							size='small'
 							label={
 								<Typography
 									variant="caption"
@@ -212,6 +214,7 @@ export const ModelSelectorMenu = ({ devModels, anchorEl, open, handleClose, hand
 						</Box>
 
 						<Chip
+							size='small'
 							label={
 								<Typography
 									variant="caption"

@@ -209,6 +209,7 @@ export const UserAddTicket = ({ handleTicketCreated, handleTicketEdited, editTic
                             }
                         }}
                         value={formData.topic_id ?? ''}
+                        mb={2}
                     />}
 
                 <CustomFilledInput

@@ -331,10 +331,10 @@ export const Agents = () => {
 								<TableCell component='th' scope='row'>
 									{agent.firstname + ' ' + agent.lastname}
 								</TableCell>
-								<TableCell>{agent.username}</TableCell>
-								<TableCell>{agent.department.name}</TableCell>
-								<TableCell>{agent.email}</TableCell>
-								<TableCell>{agent.phone}</TableCell>
+								<TableCell>{agent?.username}</TableCell>
+								<TableCell>{agent.department?.name}</TableCell>
+								<TableCell>{agent?.email}</TableCell>
+								<TableCell>{agent?.phone}</TableCell>
 								<TableCell>{agent.status === 0 ? 'Complete' : 'Pending'}</TableCell>
 								<TableCell component='th' scope='row' align='right'>
 									<Stack direction='row' spacing={0.5} sx={{ justifyContent: 'flex-end' }}>

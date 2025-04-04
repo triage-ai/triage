@@ -142,7 +142,7 @@ export const GuestHeader = ({ ticket, buttonInfo }) => {
                                     color: '#545555',
                                 }}
                             >
-									Created: {formatDate(ticket.created, 'MM-DD-YY hh:mm A')} · Updated: {formatDate(ticket.updated, 'MM-DD-YY hh:mm A')} · Priority: <Chip label={ticket.priority.priority_desc} sx={{ backgroundColor: ticket.priority.priority_color, px: '8px' }} />
+									Created: {formatDate(ticket.created, 'MM-DD-YY hh:mm A')} · Updated: {formatDate(ticket.updated, 'MM-DD-YY hh:mm A')} · Priority: <Chip size='small' label={ticket.priority.priority_desc} sx={{ backgroundColor: ticket.priority.priority_color, px: '8px', fontWeight: 600 }} />
                             </Typography>
 						</Box>
 					</Box>

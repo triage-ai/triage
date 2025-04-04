@@ -90,13 +90,15 @@ export const TicketDetail = ({ ticket, closeDrawer, updateCurrentTicket, openEdi
 										•
 									</Typography>
 										<Chip
-											label={ticket.priority.priority_desc}
-											sx={{ backgroundColor: ticket.priority.priority_color, px: '8px' }}
+											size='small'
+											label={ticket.priority?.priority_desc || 'No priority'}
+											sx={{ backgroundColor: ticket.priority?.priority_color || 'grey', px: '8px', fontWeight: 600 }}
 										/>
 										{ticket.overdue === 1 && ( 
 											<Chip
+												size='small'
 												label='Overdue'
-												sx={{ backgroundColor: '#f77c7c', marginLeft: '8px'}}
+												sx={{ backgroundColor: '#f77c7c', marginLeft: '8px', fontWeight: 600 }}
 											/>
 										)}
 								</>
@@ -270,13 +272,16 @@ export const TicketDetail = ({ ticket, closeDrawer, updateCurrentTicket, openEdi
 															year: 'numeric',
 														})
 														.replace(',', ' ')
-													: new Date(ticket.est_due_date)
+													: ticket.est_due_date ?
+														new Date(ticket.est_due_date)
 														.toLocaleDateString('en-US', {
 															day: '2-digit',
 															month: 'short',
 															year: 'numeric',
 														})
 														.replace(',', ' ')
+														: 
+														'No due date'
 												}
 											</Typography>
 										</Box>
@@ -302,7 +307,7 @@ export const TicketDetail = ({ ticket, closeDrawer, updateCurrentTicket, openEdi
 													wordBreak: 'break-word',
 												}}
 											>
-												{ticket.dept.name}
+												{ticket.dept?.name || 'No department'}
 											</Typography>
 										</Box>
 									</Box>
@@ -380,7 +385,7 @@ export const TicketDetail = ({ ticket, closeDrawer, updateCurrentTicket, openEdi
 											SLA
 										</Typography>
 										<Typography variant='subtitle1' color={'#1B1D1F'} fontWeight={600}>
-											{ticket.sla.name}
+											{ticket.sla?.name || 'No sla'}
 										</Typography>
 									</Box>
 									{ticket?.form_entry?.form?.fields?.map((field, idx) => (
@@ -401,7 +406,7 @@ export const TicketDetail = ({ ticket, closeDrawer, updateCurrentTicket, openEdi
 											Topic
 										</Typography>
 										<Typography variant='subtitle1' color={'#1B1D1F'} fontWeight={600}>
-											{ticket.topic.topic}
+											{ticket.topic?.topic || 'No topic'}
 										</Typography>
 									</Box>
 								</Grid>

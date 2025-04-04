@@ -679,7 +679,8 @@ export const Tickets = () => {
 
 const CustomPriorityChip = (ticket) => (
 	<Chip
+		size='small'
 		label={ticket.priority.priority_desc}
-		sx={{ backgroundColor: ticket.priority.priority_color, px: '8px' }}
+		sx={{ backgroundColor: ticket.priority.priority_color, px: '8px', fontWeight: 600 }}
 	/>
 )

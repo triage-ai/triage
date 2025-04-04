@@ -807,6 +807,9 @@ class Ticket(TicketBase):
     created: datetime
     category_id: int | None = None
     agent_id: int | None = None
+    topic_id: int | None = None
+    dept_id: int | None = None
+    sla_id: int | None = None
     group_id: int | None = None
     answered: int
     due_date: datetime | None = None
@@ -860,7 +863,7 @@ class TicketJoinedSimpleUser(BaseModel):
     overdue: int
     closed: datetime | None = None
 
-    topic_id: int
+    topic_id: int | None = None
     title: str
     description: str
     user_id: int

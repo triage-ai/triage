@@ -82,6 +82,17 @@ export const useTicketBackend = () => {
 		);
 	};
 
+	const getTicketByNumberForUser = async (number) => {
+		const config = {
+			headers: { Authorization: `Bearer ${userAuthState.token}` },
+		};
+
+		return await axios.get(
+			process.env.REACT_APP_BACKEND_URL + `ticket/user/number/${number}`,
+			config
+		);
+	};
+
 	const getTicketByIdForUser = async (id) => {
 		const config = {
 			headers: { Authorization: `Bearer ${userAuthState.token}` },
@@ -206,6 +217,7 @@ export const useTicketBackend = () => {
 		getTicketByQueue,
 		getTicketByIdForUser,
 		getTicketByNumber,
+		getTicketByNumberForUser,
 		getTicketByNumberForGuest,
 		getTicketForms,
 		createTicket,
