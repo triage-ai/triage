@@ -918,9 +918,10 @@ def create_ticket(background_task: BackgroundTasks, db: Session, ticket: TicketC
         db.commit()
 
         # Create New Thread
-        db_thread = models.Thread(**{'ticket_id': db_ticket.ticket_id})
-        db.add(db_thread)
-        db.commit()
+        db_thread = create_thread(db=db, thread=schemas.ThreadCreate.model_validate({'ticket_id': db_ticket.ticket_id}))
+        # db.add(db_thread)
+        # db.commit()
+        db_thread_entry = create_thread_entry(background_task=background_task, db=db, thread_entry=schemas.ThreadEntryCreate.model_validate({'thread_id': db_thread.thread_id, 'user_id': db_user.user_id, 'type': 'A', 'owner': db_user.firstname + " " + db_user.lastname, 'editor': '', 'subject': ticket.title, 'body': ticket.description, 'recipients': ''}))
 
         # Send email regarding new ticket
         user_email = db_user.email
@@ -4122,9 +4123,9 @@ def create_imap_server(background_task: BackgroundTasks, s3_manager: S3Manager):
                                         db.add(db_form_value)
 
                                 # db_thread = create_thread(db=db, thread={'ticket_id': db_ticket.ticket_id})
-                                db_thread_entry = create_thread_entry(background_task=background_task, db=db, thread_entry=schemas.ThreadEntryCreate.model_validate(
-                                    {'thread_id': db_ticket.thread.thread_id, 'user_id': db_user.user_id, 'type': 'A', 'owner': db_user.firstname + " " + db_user.lastname, 'editor': '', 'subject': subject, 'body': body, 'recipients': ''}))
-
+                                # db_thread_entry = create_thread_entry(background_task=background_task, db=db, thread_entry=schemas.ThreadEntryCreate.model_validate(
+                                #     {'thread_id': db_ticket.thread.thread_id, 'user_id': db_user.user_id, 'type': 'A', 'owner': db_user.firstname + " " + db_user.lastname, 'editor': '', 'subject': subject, 'body': body, 'recipients': ''}))
+                                db_thread_entry = db.query(models.ThreadEntry).filter(models.ThreadEntry.thread_id == db_ticket.thread.thread_id).first()
                                 # add a row for the email source table
                                 db_email_source = create_email_source(db=db, email_source=schemas.EmailSourceCreate.model_validate({'thread_entry_id': db_thread_entry.entry_id, 'email_id': db_email.email_id, 'email_uid': int(uid), 'message_id': email_content['Message-ID']}))
                                 

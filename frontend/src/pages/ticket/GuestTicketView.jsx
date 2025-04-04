@@ -983,7 +983,7 @@ export const GuestTicketView = () => {
                                                 fontSize: '0.8rem'
                                             }}
                                         >
-                                            {ticket?.form_entry?.values[idx]?.value ?? ''}
+                                            {ticket?.form_entry?.values[idx]?.value || 'No value'}
                                         </Typography>
                                         {ticket?.form_entry?.form?.fields.length !== idx + 1 && <Divider sx={{ my: 2 }} />}
                                     </>

@@ -12,7 +12,7 @@ import { useTicketBackend } from '../../hooks/useTicketBackend';
 import { FormInput } from '../form/FormInput';
 import { TopicSelect } from '../topic/TopicSelect';
 
-export const UserAddTicket = ({ handleTicketCreated, handleTicketEdited, editTicket }) => {
+export const UserAddTicket = ({ handleTicketCreated, handleTicketEdited, editTicket, setConfirmation }) => {
     const { userAuthState } = useContext(AuthContext)
     const { createTicketForUser, updateTicketForUser, getTicketForms } = useTicketBackend();
     const { getFormById } = useFormBackend();
@@ -158,12 +158,14 @@ export const UserAddTicket = ({ handleTicketCreated, handleTicketEdited, editTic
             updateTicketForUser(prepareEditTicketFormData(formData))
                 .then(res => {
                     handleTicketEdited();
+                    setConfirmation('Ticket successfully edited!');
                 })
                 .catch(err => console.error(err));
         } else {
             createTicketForUser(prepareNewTicketFormData(formData))
                 .then(res => {
                     handleTicketCreated();
+                    setConfirmation('Ticket successfully created');
                 })
                 .catch(err => console.error(err));
         }

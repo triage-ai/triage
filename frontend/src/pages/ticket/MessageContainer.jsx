@@ -24,9 +24,6 @@ export const MessageContainer = ({ item, type }) => {
 
     return (
         <Box>
-            <Typography variant='subtitle2' fontWeight={600} color='#1B1D1F' align={getDirection(item.agent_id, 'right', 'left')}>
-                {item.subject}
-            </Typography>
             <Box
                 sx={{
                     marginLeft: getDirection(item.agent_id, 'auto', 0),
@@ -131,6 +128,9 @@ export const MessageContainer = ({ item, type }) => {
                                 borderBottomLeftRadius: '8px',
                             }}
                         >
+                            <Typography variant='subtitle2' fontWeight={600} color='#1B1D1F' align={'left'}>
+                                {item.subject}  
+                            </Typography>
                             {item.body ? <RichTextReadOnly content={item.body} extensions={extensions} /> :
                                 <Typography variant="subtitle2" color="#6e7772">
                                     No description provided.

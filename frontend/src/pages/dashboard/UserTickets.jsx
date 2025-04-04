@@ -1,4 +1,5 @@
 import {
+	Alert,
 	Box,
 	Chip,
 	CssBaseline,
@@ -80,6 +81,7 @@ export const UserTickets = () => {
 	const [openProfile, setOpenProfile] = useState(false);
 	const [selectedTicket, setSelectedTicket] = useState({});
 	const [loading, setLoading] = useState(true)
+	const [confirmation, setConfirmation] = useState('')
 
 	const [queues, setQueues] = useState([]);
 	const [queueIdx, setQueueIdx] = useState(0);
@@ -336,6 +338,11 @@ export const UserTickets = () => {
 						position: 'relative',
 					}}
 				>
+					{confirmation && (
+						<Alert severity="success" onClose={() => setConfirmation('')} icon={false} sx={{mb: 2, border: '1px solid rgb(129, 199, 132);'}} >
+							{confirmation}
+						</Alert>	
+					)}
 					<WhiteContainer noPadding>
 						<Box
 							sx={{
@@ -443,7 +450,6 @@ export const UserTickets = () => {
 								</FormControl>
 							</Box>
 						</Box>
-
 
 
 						<TableContainer>
@@ -613,6 +619,7 @@ export const UserTickets = () => {
 								handleTicketCreated={handleTicketCreated}
 								handleTicketEdited={handleTicketEdited}
 								editTicket={selectedTicket}
+								setConfirmation={setConfirmation}
 							/>
 						</Box>
 					</Dialog>
